@@ -1,4 +1,6 @@
-import { Folder, Globe, History, Settings } from "lucide-react";
+import { Folder, Globe, History as HistoryIcon, Settings } from "lucide-react";
+import { CollectionsTree } from "./CollectionsTree";
+import { HistoryList } from "./HistoryList";
 
 export function Sidebar() {
   return (
@@ -8,13 +10,26 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 overflow-y-auto py-2">
-        <SidebarSection icon={<Folder size={14} />} label="Collections" />
-        <SidebarSection icon={<Globe size={14} />} label="Environments" />
-        <SidebarSection icon={<History size={14} />} label="History" />
+        <Section icon={<Folder size={12} />} label="Collections">
+          <CollectionsTree />
+        </Section>
+
+        <Section icon={<Globe size={12} />} label="Environments">
+          <div className="px-3 py-2 text-11 text-subtext italic">
+            Environments arrive in Phase 1F.
+          </div>
+        </Section>
+
+        <Section icon={<HistoryIcon size={12} />} label="History">
+          <HistoryList />
+        </Section>
       </nav>
 
-      <div className="border-t border-border h-[40px] px-3 flex items-center justify-between">
-        <button className="flex items-center gap-2 text-subtext hover:text-text transition-colors">
+      <div className="border-t border-border h-[40px] px-3 flex items-center">
+        <button
+          type="button"
+          className="flex items-center gap-2 text-subtext hover:text-text transition-colors"
+        >
           <Settings size={14} />
           <span className="text-12">Settings</span>
         </button>
@@ -23,13 +38,22 @@ export function Sidebar() {
   );
 }
 
-function SidebarSection({ icon, label }: { icon: React.ReactNode; label: string }) {
+function Section({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="px-3 py-2">
-      <div className="flex items-center gap-2 text-subtext text-11 font-semibold uppercase tracking-wider">
+    <div className="pb-3">
+      <div className="px-3 py-2 flex items-center gap-2 text-subtext text-11 font-semibold uppercase tracking-wider">
         {icon}
         <span>{label}</span>
       </div>
+      {children}
     </div>
   );
 }

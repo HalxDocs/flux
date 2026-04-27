@@ -8,6 +8,15 @@ type UIStore = {
   responseTab: ResponseTab;
   setRequestTab: (t: RequestTab) => void;
   setResponseTab: (t: ResponseTab) => void;
+
+  saveModalOpen: boolean;
+  openSaveModal: () => void;
+  closeSaveModal: () => void;
+
+  // Tracks which saved request is currently loaded (so the Save modal can
+  // offer "Update existing" vs. "Save as new").
+  loadedRequestID: string | null;
+  setLoadedRequestID: (id: string | null) => void;
 };
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -15,4 +24,11 @@ export const useUIStore = create<UIStore>((set) => ({
   responseTab: "body",
   setRequestTab: (requestTab) => set({ requestTab }),
   setResponseTab: (responseTab) => set({ responseTab }),
+
+  saveModalOpen: false,
+  openSaveModal: () => set({ saveModalOpen: true }),
+  closeSaveModal: () => set({ saveModalOpen: false }),
+
+  loadedRequestID: null,
+  setLoadedRequestID: (loadedRequestID) => set({ loadedRequestID }),
 }));

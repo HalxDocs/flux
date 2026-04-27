@@ -1,6 +1,7 @@
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Save, Send } from "lucide-react";
 import { useRequestStore } from "../../stores/useRequestStore";
 import { useResponseStore } from "../../stores/useResponseStore";
+import { useUIStore } from "../../stores/useUIStore";
 import { MethodSelect } from "../shared/MethodSelect";
 import { buildQueryString, parseQueryString, splitUrl } from "../../lib/url";
 import { uid } from "../../lib/id";
@@ -13,6 +14,7 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
   const setMethod = useRequestStore((s) => s.setMethod);
   const setUrl = useRequestStore((s) => s.setUrl);
   const isLoading = useResponseStore((s) => s.isLoading);
+  const openSaveModal = useUIStore((s) => s.openSaveModal);
 
   const displayed = url + buildQueryString(params);
 
@@ -42,8 +44,18 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
         }}
         spellCheck={false}
         autoComplete="off"
-        className="flex-1 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
+        className="flex-1 min-w-0 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
       />
+
+      <button
+        type="button"
+        onClick={openSaveModal}
+        title="Save request (Ctrl+S)"
+        className="h-[36px] w-[36px] flex items-center justify-center bg-card border border-border hover:border-violet rounded-md text-subtext hover:text-text transition-colors"
+        aria-label="Save request"
+      >
+        <Save size={14} />
+      </button>
 
       <button
         type="button"

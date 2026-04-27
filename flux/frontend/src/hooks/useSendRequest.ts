@@ -2,12 +2,14 @@ import { useCallback } from "react";
 import { SendRequest } from "../../wailsjs/go/main/App";
 import { useRequestStore } from "../stores/useRequestStore";
 import { useResponseStore } from "../stores/useResponseStore";
+import { useHistoryStore } from "../stores/useHistoryStore";
 import { buildPayload } from "../lib/buildPayload";
 import type { ResponseResult } from "../types/request";
 
 export function useSendRequest() {
   const setResponse = useResponseStore((s) => s.setResponse);
   const setLoading = useResponseStore((s) => s.setLoading);
+  const refreshHistory = useHistoryStore((s) => s.load);
 
   return useCallback(async () => {
     const requestState = useRequestStore.getState();
@@ -39,6 +41,10 @@ export function useSendRequest() {
         sizeBytes: 0,
         error: err instanceof Error ? err.message : String(err),
       });
+    } finally {
+      // Refresh history so the Sidebar list reflects the new entry that the
+      // Go side persisted in app.go SendRequest.
+      refreshHistory().catch(() => undefined);
     }
-  }, [setLoading, setResponse]);
+  }, [setLoading, setResponse, refreshHistory]);
 }
