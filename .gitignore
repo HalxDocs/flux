@@ -3,6 +3,7 @@ flux/flux.exe
 flux/flux
 flux/build/bin/
 flux/frontend/dist/
+flux/frontend/package.json.md5
 
 # Dependencies
 node_modules/
