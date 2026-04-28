@@ -1,6 +1,9 @@
+import { useMemo } from "react";
+import { Check, AlertTriangle } from "lucide-react";
 import { useRequestStore } from "../../../stores/useRequestStore";
 import { cn } from "../../../lib/cn";
 import { KeyValueEditor } from "../../shared/KeyValueEditor";
+import { JsonEditor } from "../../shared/JsonEditor";
 import type { BodyType } from "../../../types/request";
 
 const MODES: { id: BodyType; label: string }[] = [
@@ -9,6 +12,17 @@ const MODES: { id: BodyType; label: string }[] = [
   { id: "form", label: "form-data" },
   { id: "urlencoded", label: "x-www-form-urlencoded" },
 ];
+
+function validateJson(body: string): { ok: boolean; error?: string } {
+  const trimmed = body.trim();
+  if (!trimmed) return { ok: true };
+  try {
+    JSON.parse(trimmed);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Invalid JSON" };
+  }
+}
 
 export function BodyTab() {
   const bodyType = useRequestStore((s) => s.bodyType);
@@ -20,8 +34,19 @@ export function BodyTab() {
   const updateBodyForm = useRequestStore((s) => s.updateBodyForm);
   const removeBodyForm = useRequestStore((s) => s.removeBodyForm);
 
+  const validity = useMemo(() => validateJson(bodyRaw), [bodyRaw]);
+
+  const handleFormat = () => {
+    try {
+      const parsed = JSON.parse(bodyRaw);
+      setBodyRaw(JSON.stringify(parsed, null, 2));
+    } catch {
+      // ignore — button is disabled when invalid
+    }
+  };
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 px-3 py-3 border-b border-border flex-wrap">
         {MODES.map((m) => (
           <button
@@ -31,7 +56,7 @@ export function BodyTab() {
             className={cn(
               "px-3 h-[28px] rounded-sm text-12 font-medium transition-colors",
               bodyType === m.id
-                ? "bg-violet text-white"
+                ? "bg-blue text-white"
                 : "bg-card text-subtext hover:text-text hover:bg-cardHover",
             )}
           >
@@ -47,13 +72,40 @@ export function BodyTab() {
       )}
 
       {bodyType === "json" && (
-        <textarea
-          value={bodyRaw}
-          onChange={(e) => setBodyRaw(e.target.value)}
-          spellCheck={false}
-          placeholder='{\n  "key": "value"\n}'
-          className="bg-bg font-mono text-12 text-teal placeholder:text-subtext p-3 outline-none resize-none min-h-[240px] border-b border-border"
-        />
+        <>
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+            <div className="flex items-center gap-2 text-11">
+              {bodyRaw.trim() === "" ? (
+                <span className="text-subtext">Empty body</span>
+              ) : validity.ok ? (
+                <span className="text-teal flex items-center gap-1">
+                  <Check size={11} />
+                  Valid JSON
+                </span>
+              ) : (
+                <span className="text-warn flex items-center gap-1" title={validity.error}>
+                  <AlertTriangle size={11} />
+                  Invalid JSON
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={handleFormat}
+              disabled={!validity.ok || !bodyRaw.trim()}
+              className="text-11 text-subtext hover:text-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Format
+            </button>
+          </div>
+          <div className="flex-1 min-h-0">
+            <JsonEditor
+              value={bodyRaw}
+              onChange={setBodyRaw}
+              placeholder='{ "key": "value" }'
+            />
+          </div>
+        </>
       )}
 
       {(bodyType === "form" || bodyType === "urlencoded") && (

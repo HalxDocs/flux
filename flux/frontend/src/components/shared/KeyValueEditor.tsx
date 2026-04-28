@@ -41,7 +41,7 @@ export function KeyValueEditor({
             type="checkbox"
             checked={row.enabled}
             onChange={(e) => onUpdate(row.id, { enabled: e.target.checked })}
-            className="accent-violet w-[14px] h-[14px] cursor-pointer"
+            className="accent-blue w-[14px] h-[14px] cursor-pointer"
             aria-label="Enable row"
           />
           <input
@@ -87,7 +87,7 @@ export function KeyValueEditor({
       <button
         type="button"
         onClick={onAdd}
-        className="flex items-center gap-2 px-3 py-2 text-12 text-subtext hover:text-violet transition-colors w-fit"
+        className="flex items-center gap-2 px-3 py-2 text-12 text-subtext hover:text-blue transition-colors w-fit"
       >
         <Plus size={12} />
         <span>Add row</span>

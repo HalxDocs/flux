@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Modal } from "../shared/Modal";
 import { KeyValueEditor } from "../shared/KeyValueEditor";
@@ -46,13 +46,28 @@ export function EnvironmentsModal() {
   const [selectedID, setSelectedID] = useState<string | null>(null);
   const [draft, setDraft] = useState<DraftEnv | null>(null);
   const [busy, setBusy] = useState(false);
+  const initialized = useRef(false);
 
+  // Pick a default selection on open, but don't clobber it when the env list
+  // changes (which would steal the new env right after handleCreate sets it).
   useEffect(() => {
-    if (!open) return;
-    const target = environments[0] ?? null;
-    setSelectedID(target?.id ?? null);
-    setDraft(target ? { id: target.id, name: target.name, rows: toRows(target) } : null);
+    if (!open) {
+      initialized.current = false;
+      return;
+    }
+    if (!initialized.current) {
+      initialized.current = true;
+      setSelectedID(environments[0]?.id ?? null);
+    }
   }, [open, environments]);
+
+  // If the selected env disappears (e.g. user deletes it), fall back.
+  useEffect(() => {
+    if (!open || !selectedID) return;
+    if (!environments.some((e) => e.id === selectedID)) {
+      setSelectedID(environments[0]?.id ?? null);
+    }
+  }, [environments, selectedID, open]);
 
   useEffect(() => {
     if (!selectedID) {
@@ -103,7 +118,7 @@ export function EnvironmentsModal() {
             type="button"
             onClick={handleCreate}
             disabled={busy}
-            className="flex items-center gap-2 h-[28px] px-2 mb-2 text-12 text-subtext hover:text-violet transition-colors"
+            className="flex items-center gap-2 h-[28px] px-2 mb-2 text-12 text-subtext hover:text-blue transition-colors"
           >
             <Plus size={12} />
             <span>New</span>
@@ -122,7 +137,7 @@ export function EnvironmentsModal() {
                 className={cn(
                   "text-left px-2 py-1.5 rounded-sm text-12 transition-colors truncate",
                   env.id === selectedID
-                    ? "bg-violet/15 text-violet"
+                    ? "bg-blue/15 text-blue"
                     : "text-text hover:bg-cardHover",
                 )}
               >
@@ -145,7 +160,7 @@ export function EnvironmentsModal() {
                 value={draft.name}
                 onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                 placeholder="Environment name"
-                className="h-[32px] px-2 mb-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet"
+                className="h-[32px] px-2 mb-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue"
               />
 
               <div className="flex-1 border border-border rounded-md overflow-hidden bg-surface">
@@ -202,7 +217,7 @@ export function EnvironmentsModal() {
                     type="button"
                     onClick={handleSave}
                     disabled={busy}
-                    className="h-[32px] px-4 bg-violet hover:bg-violet-hover text-white text-12 font-bold rounded-md disabled:opacity-60 transition-all"
+                    className="h-[32px] px-4 bg-blue hover:bg-blue-hover text-white text-12 font-bold rounded-md disabled:opacity-60 transition-all"
                   >
                     {busy ? "Saving…" : "Save"}
                   </button>

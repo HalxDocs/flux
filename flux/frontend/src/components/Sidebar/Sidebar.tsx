@@ -1,7 +1,8 @@
-import { Download, Folder, Globe, History as HistoryIcon, Settings } from "lucide-react";
+import { Download, Folder, History as HistoryIcon, Settings } from "lucide-react";
 import { CollectionsTree } from "./CollectionsTree";
 import { HistoryList } from "./HistoryList";
 import { EnvSwitcher } from "./EnvSwitcher";
+import { SearchBar } from "./SearchBar";
 import { useUIStore } from "../../stores/useUIStore";
 
 export function Sidebar() {
@@ -10,11 +11,12 @@ export function Sidebar() {
   return (
     <aside className="w-[240px] shrink-0 h-full bg-surface border-r border-border flex flex-col">
       <div className="h-[48px] px-4 flex items-center justify-between border-b border-border">
-        <span className="font-extrabold text-20 text-violet tracking-tight">FLUX</span>
+        <span className="font-extrabold text-20 text-blue tracking-tight">FLUX</span>
       </div>
 
-      <div className="px-3 py-2 border-b border-border">
+      <div className="px-3 py-2 border-b border-border flex flex-col gap-2">
         <EnvSwitcher />
+        <SearchBar />
       </div>
 
       <nav className="flex-1 overflow-y-auto py-2">
@@ -25,7 +27,7 @@ export function Sidebar() {
             <button
               type="button"
               onClick={openImport}
-              className="text-subtext hover:text-violet transition-colors p-1 rounded-sm"
+              className="text-subtext hover:text-blue transition-colors p-1 rounded-sm"
               aria-label="Import Postman collection"
               title="Import Postman v2.1 collection"
             >
@@ -34,10 +36,6 @@ export function Sidebar() {
           }
         >
           <CollectionsTree />
-        </Section>
-
-        <Section icon={<Globe size={12} />} label="Environments">
-          <ManageEnvsButton />
         </Section>
 
         <Section icon={<HistoryIcon size={12} />} label="History">
@@ -55,19 +53,6 @@ export function Sidebar() {
         </button>
       </div>
     </aside>
-  );
-}
-
-function ManageEnvsButton() {
-  const open = useUIStore((s) => s.openEnvModal);
-  return (
-    <button
-      type="button"
-      onClick={open}
-      className="w-full text-left px-3 py-1.5 text-12 text-subtext hover:text-text hover:bg-cardHover transition-colors"
-    >
-      Manage environments…
-    </button>
   );
 }
 

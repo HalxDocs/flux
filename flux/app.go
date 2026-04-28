@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"sync"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -20,6 +21,12 @@ type App struct {
 	collections  *collections.Store
 	history      *history.Store
 	environments *environments.Store
+
+	// inflight tracks the currently executing SendRequest's cancel func, so
+	// CancelRequest from the UI can abort it. Phase 1 supports one in-flight
+	// request at a time; concurrency is a Phase 2+ concern.
+	mu       sync.Mutex
+	inflight context.CancelFunc
 }
 
 func NewApp() *App {
@@ -34,11 +41,42 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// SendRequest executes an HTTP request and persists a history entry.
+// SendRequest executes an HTTP request and persists a history entry. The
+// request runs under a cancellable context; CancelRequest aborts it.
 func (a *App) SendRequest(payload models.RequestPayload) models.ResponseResult {
-	result := requester.Execute(payload)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	a.mu.Lock()
+	// Cancel any prior in-flight request before starting a new one.
+	if a.inflight != nil {
+		a.inflight()
+	}
+	a.inflight = cancel
+	a.mu.Unlock()
+
+	result := requester.Execute(ctx, payload)
+
+	a.mu.Lock()
+	if a.inflight != nil {
+		// Already cleared if CancelRequest ran first; otherwise clean up.
+		a.inflight = nil
+	}
+	a.mu.Unlock()
+	cancel()
+
 	_ = a.history.Append(payload, result)
 	return result
+}
+
+// CancelRequest aborts the most recent in-flight SendRequest (if any).
+// Safe to call when no request is in flight.
+func (a *App) CancelRequest() {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.inflight != nil {
+		a.inflight()
+		a.inflight = nil
+	}
 }
 
 // --- Collections ---

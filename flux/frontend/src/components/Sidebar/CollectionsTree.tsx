@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronDown, ChevronRight, MoreVertical, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronDown, ChevronRight, Copy, MoreVertical, Plus, Trash2 } from "lucide-react";
 import { useCollectionStore } from "../../stores/useCollectionStore";
 import { useRequestStore } from "../../stores/useRequestStore";
 import { useUIStore } from "../../stores/useUIStore";
@@ -17,14 +17,30 @@ export function CollectionsTree() {
   const renameCollection = useCollectionStore((s) => s.renameCollection);
   const deleteCollection = useCollectionStore((s) => s.deleteCollection);
   const deleteRequest = useCollectionStore((s) => s.deleteRequest);
+  const duplicateRequest = useCollectionStore((s) => s.duplicateRequest);
   const loadState = useRequestStore((s) => s.loadState);
   const setLoadedRequestID = useUIStore((s) => s.setLoadedRequestID);
   const loadedRequestID = useUIStore((s) => s.loadedRequestID);
+  const filter = useUIStore((s) => s.sidebarFilter);
 
   const [renamingID, setRenamingID] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
+
+  const visible = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    if (!q) return collections.map((c) => ({ coll: c, requests: c.requests }));
+    return collections
+      .map((c) => {
+        const collMatches = c.name.toLowerCase().includes(q);
+        const matchedReqs = collMatches
+          ? c.requests
+          : c.requests.filter((r) => r.name.toLowerCase().includes(q));
+        return { coll: c, requests: matchedReqs, collMatches };
+      })
+      .filter((x) => x.collMatches || x.requests.length > 0);
+  }, [collections, filter]);
 
   const handleCreate = async () => {
     const trimmed = newName.trim();
@@ -50,20 +66,8 @@ export function CollectionsTree() {
 
   return (
     <div className="flex flex-col">
-      <div className="px-3 pb-1 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => setCreating(true)}
-          className="text-subtext hover:text-violet transition-colors p-1 rounded-sm"
-          aria-label="New collection"
-          title="New collection"
-        >
-          <Plus size={12} />
-        </button>
-      </div>
-
-      {creating && (
-        <div className="px-3 py-1">
+      {creating ? (
+        <div className="px-3 pb-1">
           <input
             autoFocus
             value={newName}
@@ -76,10 +80,19 @@ export function CollectionsTree() {
                 setNewName("");
               }
             }}
-            placeholder="Collection name"
-            className="w-full h-[24px] px-2 bg-surface border border-violet rounded-sm text-12 text-text outline-none"
+            placeholder="Collection name…"
+            className="w-full h-[28px] px-2 bg-surface border border-blue rounded-md text-12 text-text outline-none ring-2 ring-blue"
           />
         </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCreating(true)}
+          className="mx-3 mb-1 h-[28px] px-2 flex items-center gap-2 text-12 text-subtext hover:text-blue hover:bg-cardHover rounded-md border border-dashed border-border hover:border-blue transition-colors"
+        >
+          <Plus size={12} />
+          <span>New collection</span>
+        </button>
       )}
 
       {collections.length === 0 && !creating && (
@@ -88,8 +101,12 @@ export function CollectionsTree() {
         </div>
       )}
 
-      {collections.map((c) => {
-        const isOpen = expanded[c.id] !== false;
+      {filter && visible.length === 0 && collections.length > 0 && (
+        <div className="px-3 py-2 text-11 text-subtext italic">No matches.</div>
+      )}
+
+      {visible.map(({ coll: c, requests }) => {
+        const isOpen = expanded[c.id] !== false || !!filter;
         return (
           <div key={c.id} className="flex flex-col">
             <div className="group px-3 py-1.5 flex items-center gap-1 hover:bg-cardHover transition-colors">
@@ -111,7 +128,7 @@ export function CollectionsTree() {
                     if (e.key === "Enter") handleRename(c.id);
                     if (e.key === "Escape") setRenamingID(null);
                   }}
-                  className="flex-1 h-[20px] px-1 bg-surface border border-violet rounded-sm text-12 text-text outline-none"
+                  className="flex-1 h-[20px] px-1 bg-surface border border-blue rounded-sm text-12 text-text outline-none"
                 />
               ) : (
                 <button
@@ -122,6 +139,9 @@ export function CollectionsTree() {
                   {c.name}
                 </button>
               )}
+              <span className="text-11 text-subtext font-mono mr-1">
+                {c.requests.length}
+              </span>
               <CollectionMenu
                 onRename={() => {
                   setRenameValue(c.name);
@@ -135,12 +155,12 @@ export function CollectionsTree() {
               />
             </div>
 
-            {isOpen && c.requests.length === 0 && (
+            {isOpen && requests.length === 0 && (
               <div className="pl-7 pr-3 py-1 text-11 text-subtext italic">Empty</div>
             )}
 
             {isOpen &&
-              c.requests.map((req) => (
+              requests.map((req) => (
                 <div
                   key={req.id}
                   className={cn(
@@ -151,10 +171,22 @@ export function CollectionsTree() {
                   onClick={() => loadRequest(req)}
                 >
                   {loadedRequestID === req.id && (
-                    <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-violet" />
+                    <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-blue" />
                   )}
                   <MethodBadge method={(req.payload.method as HttpMethod) || "GET"} />
                   <span className="flex-1 text-12 text-text truncate">{req.name}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      duplicateRequest(req.id).catch(() => undefined);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 text-subtext hover:text-text transition-all"
+                    aria-label="Duplicate request"
+                    title="Duplicate request"
+                  >
+                    <Copy size={12} />
+                  </button>
                   <button
                     type="button"
                     onClick={(e) => {

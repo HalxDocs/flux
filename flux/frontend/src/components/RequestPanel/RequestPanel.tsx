@@ -14,12 +14,21 @@ const TABS: TabItem<RequestTab>[] = [
   { id: "auth", label: "Auth" },
 ];
 
-export function RequestPanel({ onSend }: { onSend?: () => void }) {
+export function RequestPanel({
+  onSend,
+  width,
+}: {
+  onSend?: () => void;
+  width: number;
+}) {
   const requestTab = useUIStore((s) => s.requestTab);
   const setRequestTab = useUIStore((s) => s.setRequestTab);
 
   return (
-    <section className="w-[420px] shrink-0 h-full bg-bg border-r border-border flex flex-col min-w-0">
+    <section
+      style={{ width: `${width}px` }}
+      className="shrink-0 h-full bg-bg flex flex-col min-w-0"
+    >
       <UrlBar onSend={onSend} />
       <UrlPreview />
       <Tabs tabs={TABS} active={requestTab} onChange={setRequestTab} />

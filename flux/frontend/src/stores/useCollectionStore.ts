@@ -30,6 +30,7 @@ type CollectionStore = {
   ) => Promise<models.SavedRequest>;
   updateRequest: (reqID: string, name: string, payload: WirePayload) => Promise<void>;
   deleteRequest: (reqID: string) => Promise<void>;
+  duplicateRequest: (reqID: string) => Promise<void>;
 };
 
 export const useCollectionStore = create<CollectionStore>((set, get) => ({
@@ -79,5 +80,27 @@ export const useCollectionStore = create<CollectionStore>((set, get) => ({
   deleteRequest: async (reqID) => {
     await DeleteSavedRequest(reqID);
     await get().load();
+  },
+
+  duplicateRequest: async (reqID) => {
+    const colls = get().collections;
+    for (const c of colls) {
+      const req = c.requests.find((r) => r.id === reqID);
+      if (!req) continue;
+      const wire: WirePayload = {
+        method: req.payload.method,
+        url: req.payload.url,
+        headers: req.payload.headers ?? [],
+        params: req.payload.params ?? [],
+        bodyType: req.payload.bodyType,
+        body: req.payload.body,
+        bodyForm: req.payload.bodyForm ?? [],
+        authType: req.payload.authType,
+        authValue: req.payload.authValue,
+      };
+      await AddRequestToCollection(c.id, `${req.name} (copy)`, wire as never);
+      await get().load();
+      return;
+    }
   },
 }));

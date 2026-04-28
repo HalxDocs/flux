@@ -29,7 +29,7 @@ export function AuthTab() {
             className={cn(
               "px-3 h-[28px] rounded-sm text-12 font-medium transition-colors",
               authType === t.id
-                ? "bg-violet text-white"
+                ? "bg-blue text-white"
                 : "bg-card text-subtext hover:text-text hover:bg-cardHover",
             )}
           >
@@ -56,7 +56,7 @@ export function AuthTab() {
             placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             spellCheck={false}
             autoComplete="off"
-            className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text placeholder:text-subtext outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
+            className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text placeholder:text-subtext outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
           />
           <p className="text-11 text-subtext mt-1">
             Sent as: <span className="font-mono">Authorization: Bearer ...</span>
@@ -75,7 +75,7 @@ export function AuthTab() {
               value={authUser}
               onChange={(e) => setAuthUser(e.target.value)}
               autoComplete="off"
-              className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
+              className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -87,7 +87,7 @@ export function AuthTab() {
               value={authPass}
               onChange={(e) => setAuthPass(e.target.value)}
               autoComplete="off"
-              className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
+              className="h-[36px] px-3 bg-surface border border-border rounded-md font-mono text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
             />
           </div>
         </div>

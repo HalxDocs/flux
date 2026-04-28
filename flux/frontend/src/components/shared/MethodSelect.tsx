@@ -30,8 +30,8 @@ export function MethodSelect({
         onClick={() => setOpen((o) => !o)}
         className={cn(
           "flex items-center gap-2 h-[36px] px-3 rounded-md bg-card border border-border",
-          "hover:border-violet transition-colors",
-          open && "border-violet ring-2 ring-violet",
+          "hover:border-blue transition-colors",
+          open && "border-blue ring-2 ring-blue",
         )}
       >
         <MethodBadge method={value} />

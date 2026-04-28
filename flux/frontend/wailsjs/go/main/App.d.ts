@@ -5,6 +5,8 @@ import {environments} from '../models';
 
 export function AddRequestToCollection(arg1:string,arg2:string,arg3:models.RequestPayload):Promise<models.SavedRequest>;
 
+export function CancelRequest():Promise<void>;
+
 export function ClearHistory():Promise<void>;
 
 export function CreateCollection(arg1:string):Promise<models.Collection>;

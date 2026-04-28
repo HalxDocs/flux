@@ -1,6 +1,7 @@
 package requester
 
 import (
+	"context"
 	"encoding/base64"
 	"io"
 	"net/http"
@@ -25,7 +26,7 @@ func TestExecute_GETWithParamsAndHeaders(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	res := Execute(models.RequestPayload{
+	res := Execute(context.Background(), models.RequestPayload{
 		Method: "GET",
 		URL:    ts.URL,
 		Params: []models.Header{{Key: "foo", Value: "bar", Enabled: true}, {Key: "skipped", Value: "x", Enabled: false}},
@@ -59,7 +60,7 @@ func TestExecute_PostJSONBody(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	res := Execute(models.RequestPayload{
+	res := Execute(context.Background(), models.RequestPayload{
 		Method:   "POST",
 		URL:      ts.URL,
 		BodyType: "json",
@@ -82,7 +83,7 @@ func TestExecute_BasicAuth(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	res := Execute(models.RequestPayload{
+	res := Execute(context.Background(), models.RequestPayload{
 		Method:    "GET",
 		URL:       ts.URL,
 		AuthType:  "basic",
@@ -102,7 +103,7 @@ func TestExecute_BearerAuth(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	res := Execute(models.RequestPayload{
+	res := Execute(context.Background(), models.RequestPayload{
 		Method:    "GET",
 		URL:       ts.URL,
 		AuthType:  "bearer",
@@ -126,7 +127,7 @@ func TestExecute_FormBody(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	res := Execute(models.RequestPayload{
+	res := Execute(context.Background(), models.RequestPayload{
 		Method:   "POST",
 		URL:      ts.URL,
 		BodyType: "urlencoded",
@@ -138,7 +139,7 @@ func TestExecute_FormBody(t *testing.T) {
 }
 
 func TestExecute_EmptyURLReturnsError(t *testing.T) {
-	res := Execute(models.RequestPayload{Method: "GET", URL: ""})
+	res := Execute(context.Background(), models.RequestPayload{Method: "GET", URL: ""})
 	if res.Error == "" {
 		t.Fatalf("expected error for empty URL, got result %+v", res)
 	}

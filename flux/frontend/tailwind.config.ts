@@ -10,9 +10,9 @@ const config: Config = {
         card: "#1A1A1A",
         cardHover: "#222222",
         border: "#2A2A2A",
-        violet: {
-          DEFAULT: "#6C63FF",
-          hover: "#7C73FF",
+        blue: {
+          DEFAULT: "#3B82F6",
+          hover: "#60A5FA",
         },
         teal: "#00D4AA",
         danger: "#FF6B6B",
@@ -46,7 +46,7 @@ const config: Config = {
         lg: '12px',
       },
       ringColor: {
-        DEFAULT: '#6C63FF',
+        DEFAULT: '#3B82F6',
       },
     },
   },

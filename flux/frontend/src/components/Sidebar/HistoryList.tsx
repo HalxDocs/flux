@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { useHistoryStore } from "../../stores/useHistoryStore";
 import { useRequestStore } from "../../stores/useRequestStore";
@@ -9,10 +10,21 @@ import { cn } from "../../lib/cn";
 import type { HttpMethod } from "../../types/request";
 
 export function HistoryList() {
-  const entries = useHistoryStore((s) => s.entries);
+  const allEntries = useHistoryStore((s) => s.entries);
   const clear = useHistoryStore((s) => s.clear);
   const loadState = useRequestStore((s) => s.loadState);
   const setLoadedRequestID = useUIStore((s) => s.setLoadedRequestID);
+  const filter = useUIStore((s) => s.sidebarFilter);
+
+  const entries = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    if (!q) return allEntries;
+    return allEntries.filter(
+      (e) =>
+        e.payload.url.toLowerCase().includes(q) ||
+        e.payload.method.toLowerCase().includes(q),
+    );
+  }, [allEntries, filter]);
 
   const handleLoad = (entryID: string, payload: { url: string; method: string }) => {
     loadState(decodePayload(payload));

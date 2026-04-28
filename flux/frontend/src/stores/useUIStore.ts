@@ -23,6 +23,9 @@ type UIStore = {
 
   loadedRequestID: string | null;
   setLoadedRequestID: (id: string | null) => void;
+
+  sidebarFilter: string;
+  setSidebarFilter: (q: string) => void;
 };
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -45,4 +48,7 @@ export const useUIStore = create<UIStore>((set) => ({
 
   loadedRequestID: null,
   setLoadedRequestID: (loadedRequestID) => set({ loadedRequestID }),
+
+  sidebarFilter: "",
+  setSidebarFilter: (sidebarFilter) => set({ sidebarFilter }),
 }));

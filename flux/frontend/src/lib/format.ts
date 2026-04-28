@@ -26,7 +26,7 @@ export function statusColor(code: number): string {
   if (code === 0) return "text-subtext";
   if (code >= 500) return "text-danger";
   if (code >= 400) return "text-warn";
-  if (code >= 300) return "text-violet";
+  if (code >= 300) return "text-blue";
   if (code >= 200) return "text-teal";
   return "text-subtext";
 }

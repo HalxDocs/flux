@@ -21,7 +21,7 @@ const fluxTheme = EditorView.theme({
     border: "none",
   },
   ".cm-content": {
-    caretColor: "#6C63FF",
+    caretColor: "#3B82F6",
   },
   ".cm-activeLine": { backgroundColor: "#141414" },
   ".cm-activeLineGutter": { backgroundColor: "#141414" },

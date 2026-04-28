@@ -13,12 +13,15 @@ import (
 	"flux/internal/models"
 )
 
+
 const defaultTimeout = 30 * time.Second
 
-// Execute runs the given RequestPayload and returns a fully-populated
-// ResponseResult. Any transport-level failure is returned in the Error field
-// rather than as a Go error so the frontend can display it as a normal result.
-func Execute(payload models.RequestPayload) models.ResponseResult {
+// Execute runs the given RequestPayload under the supplied context (so callers
+// can cancel mid-flight) and returns a fully-populated ResponseResult. Any
+// transport-level failure is returned in the Error field rather than as a Go
+// error so the frontend can display it as a normal result. Cancellation is
+// surfaced as a friendly "Request canceled" string.
+func Execute(ctx context.Context, payload models.RequestPayload) models.ResponseResult {
 	start := time.Now()
 
 	finalURL, err := buildURL(payload.URL, payload.Params)
@@ -36,10 +39,11 @@ func Execute(payload models.RequestPayload) models.ResponseResult {
 		method = http.MethodGet
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	// Apply a fallback timeout if the caller's context has none.
+	reqCtx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, method, finalURL, body)
+	req, err := http.NewRequestWithContext(reqCtx, method, finalURL, body)
 	if err != nil {
 		return errResult(err, time.Since(start))
 	}
@@ -50,9 +54,15 @@ func Execute(payload models.RequestPayload) models.ResponseResult {
 	}
 	applyAuth(req, payload.AuthType, payload.AuthValue)
 
-	client := &http.Client{Timeout: defaultTimeout}
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			return errResult(errors.New("request canceled"), time.Since(start))
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			return errResult(errors.New("request timed out after 30s"), time.Since(start))
+		}
 		return errResult(err, time.Since(start))
 	}
 	defer resp.Body.Close()
@@ -60,6 +70,9 @@ func Execute(payload models.RequestPayload) models.ResponseResult {
 	respBody, readErr := io.ReadAll(resp.Body)
 	timing := time.Since(start)
 	if readErr != nil {
+		if errors.Is(readErr, context.Canceled) {
+			return errResult(errors.New("request canceled"), timing)
+		}
 		return errResult(readErr, timing)
 	}
 

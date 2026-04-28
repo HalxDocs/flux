@@ -1,10 +1,11 @@
-import { Loader2, Save, Send } from "lucide-react";
+import { Save, Send, X } from "lucide-react";
 import { useRequestStore } from "../../stores/useRequestStore";
 import { useResponseStore } from "../../stores/useResponseStore";
 import { useUIStore } from "../../stores/useUIStore";
 import { MethodSelect } from "../shared/MethodSelect";
 import { buildQueryString, parseQueryString, splitUrl } from "../../lib/url";
 import { uid } from "../../lib/id";
+import { CancelRequest } from "../../../wailsjs/go/main/App";
 import type { KeyValue } from "../../types/request";
 
 export function UrlBar({ onSend }: { onSend?: () => void }) {
@@ -45,37 +46,40 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
         }}
         spellCheck={false}
         autoComplete="off"
-        className="flex-1 min-w-0 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-violet focus:ring-2 focus:ring-violet transition-colors"
+        className="flex-1 min-w-0 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
       />
 
       <button
         type="button"
         onClick={openSaveModal}
         title="Save request (Ctrl+S)"
-        className="h-[36px] w-[36px] flex items-center justify-center bg-card border border-border hover:border-violet rounded-md text-subtext hover:text-text transition-colors"
+        className="h-[36px] w-[36px] flex items-center justify-center bg-card border border-border hover:border-blue rounded-md text-subtext hover:text-text transition-colors"
         aria-label="Save request"
       >
         <Save size={14} />
       </button>
 
-      <button
-        type="button"
-        onClick={onSend}
-        disabled={isLoading}
-        className="h-[36px] px-4 bg-violet hover:bg-violet-hover active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 rounded-md font-bold text-13 text-white flex items-center gap-2 transition-all"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 size={14} className="animate-spin" />
-            <span>Sending</span>
-          </>
-        ) : (
-          <>
-            <Send size={14} />
-            <span>Send</span>
-          </>
-        )}
-      </button>
+      {isLoading ? (
+        <button
+          type="button"
+          onClick={() => {
+            void CancelRequest();
+          }}
+          className="h-[36px] px-4 bg-danger hover:opacity-90 active:scale-[0.97] rounded-md font-bold text-13 text-white flex items-center gap-2 transition-all"
+        >
+          <X size={14} />
+          <span>Cancel</span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onSend}
+          className="h-[36px] px-4 bg-blue hover:bg-blue-hover active:scale-[0.97] rounded-md font-bold text-13 text-white flex items-center gap-2 transition-all"
+        >
+          <Send size={14} />
+          <span>Send</span>
+        </button>
+      )}
     </div>
   );
 }

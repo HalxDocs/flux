@@ -67,7 +67,7 @@ export function SaveRequestModal() {
             onChange={(e) => setName(e.target.value)}
             autoFocus
             spellCheck={false}
-            className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet"
+            className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue"
           />
         </Field>
 
@@ -75,7 +75,7 @@ export function SaveRequestModal() {
           <select
             value={collID}
             onChange={(e) => setCollID(e.target.value)}
-            className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet"
+            className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue"
           >
             {collections.map((c) => (
               <option key={c.id} value={c.id}>
@@ -94,7 +94,7 @@ export function SaveRequestModal() {
               onChange={(e) => setNewCollName(e.target.value)}
               spellCheck={false}
               placeholder="e.g. Auth API"
-              className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-violet focus:ring-2 focus:ring-violet"
+              className="h-[36px] px-3 bg-surface border border-border rounded-md text-12 text-text outline-none focus:border-blue focus:ring-2 focus:ring-blue"
             />
           </Field>
         )}
@@ -113,7 +113,7 @@ export function SaveRequestModal() {
             type="button"
             onClick={handleSave}
             disabled={busy}
-            className="h-[32px] px-4 bg-violet hover:bg-violet-hover text-white text-12 font-bold rounded-md disabled:opacity-60 transition-all"
+            className="h-[32px] px-4 bg-blue hover:bg-blue-hover text-white text-12 font-bold rounded-md disabled:opacity-60 transition-all"
           >
             {busy ? "Saving…" : "Save"}
           </button>

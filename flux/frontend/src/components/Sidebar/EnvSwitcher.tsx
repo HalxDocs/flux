@@ -32,7 +32,7 @@ export function EnvSwitcher() {
         className={cn(
           "w-full flex items-center justify-between gap-2 h-[28px] px-2 rounded-md border transition-colors",
           active
-            ? "bg-violet/10 border-violet/40 text-violet"
+            ? "bg-blue/10 border-blue/40 text-blue"
             : "bg-surface border-border text-subtext hover:text-text",
         )}
       >
@@ -55,7 +55,7 @@ export function EnvSwitcher() {
             }}
             className={cn(
               "w-full px-3 py-1.5 text-left text-12 hover:bg-cardHover transition-colors",
-              activeID === "" ? "text-violet font-semibold" : "text-subtext",
+              activeID === "" ? "text-blue font-semibold" : "text-subtext",
             )}
           >
             No environment
@@ -70,7 +70,7 @@ export function EnvSwitcher() {
               }}
               className={cn(
                 "w-full px-3 py-1.5 text-left text-12 hover:bg-cardHover transition-colors flex items-center justify-between",
-                env.id === activeID ? "text-violet font-semibold" : "text-text",
+                env.id === activeID ? "text-blue font-semibold" : "text-text",
               )}
             >
               <span className="truncate">{env.name}</span>

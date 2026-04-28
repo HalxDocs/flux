@@ -3,9 +3,9 @@ import type { HttpMethod } from "../../types/request";
 
 const STYLES: Record<HttpMethod, string> = {
   GET: "bg-teal text-black",
-  POST: "bg-violet text-white",
+  POST: "bg-blue text-white",
   PUT: "bg-warn text-black",
-  PATCH: "bg-violet text-white",
+  PATCH: "bg-blue text-white",
   DELETE: "bg-danger text-white",
   HEAD: "bg-border text-subtext",
   OPTIONS: "bg-border text-subtext",

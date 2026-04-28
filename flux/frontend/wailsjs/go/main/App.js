@@ -6,6 +6,10 @@ export function AddRequestToCollection(arg1, arg2, arg3) {
   return window['go']['main']['App']['AddRequestToCollection'](arg1, arg2, arg3);
 }
 
+export function CancelRequest() {
+  return window['go']['main']['App']['CancelRequest']();
+}
+
 export function ClearHistory() {
   return window['go']['main']['App']['ClearHistory']();
 }
