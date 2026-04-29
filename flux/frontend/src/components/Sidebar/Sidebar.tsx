@@ -1,12 +1,15 @@
-import { Download, Folder, History as HistoryIcon, Settings } from "lucide-react";
+import { Download, Folder, History as HistoryIcon, Settings, User } from "lucide-react";
 import { CollectionsTree } from "./CollectionsTree";
 import { HistoryList } from "./HistoryList";
 import { EnvSwitcher } from "./EnvSwitcher";
 import { SearchBar } from "./SearchBar";
 import { useUIStore } from "../../stores/useUIStore";
+import { useProfileStore } from "../../stores/useProfileStore";
 
 export function Sidebar() {
   const openImport = useUIStore((s) => s.openImportModal);
+  const openSettings = useUIStore((s) => s.openSettingsModal);
+  const profile = useProfileStore((s) => s.profile);
 
   return (
     <aside className="w-[240px] shrink-0 h-full bg-surface border-r border-border flex flex-col">
@@ -43,15 +46,26 @@ export function Sidebar() {
         </Section>
       </nav>
 
-      <div className="border-t border-border h-[40px] px-3 flex items-center">
-        <button
-          type="button"
-          className="flex items-center gap-2 text-subtext hover:text-text transition-colors"
-        >
-          <Settings size={14} />
-          <span className="text-12">Settings</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={openSettings}
+        className="border-t border-border h-[44px] px-3 flex items-center gap-2 hover:bg-cardHover transition-colors text-left"
+      >
+        <div className="w-[24px] h-[24px] rounded-full bg-blue/15 flex items-center justify-center text-blue shrink-0">
+          <User size={12} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-12 text-text truncate">
+            {profile?.name?.trim() || "Set up profile"}
+          </div>
+          <div className="text-11 text-subtext truncate">
+            {profile && profile.requestCount > 0
+              ? `${profile.requestCount} request${profile.requestCount === 1 ? "" : "s"} sent`
+              : "Welcome to Flux"}
+          </div>
+        </div>
+        <Settings size={12} className="text-subtext shrink-0" />
+      </button>
     </aside>
   );
 }

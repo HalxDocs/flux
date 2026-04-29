@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Copy, MoreVertical, Plus, Trash2 } from "lucide-react";
 import { useCollectionStore } from "../../stores/useCollectionStore";
-import { useRequestStore } from "../../stores/useRequestStore";
 import { useUIStore } from "../../stores/useUIStore";
+import { useTabsStore } from "../../stores/useTabsStore";
 import { decodePayload } from "../../lib/loadPayload";
 import { MethodBadge } from "../shared/MethodBadge";
 import { cn } from "../../lib/cn";
@@ -18,7 +18,7 @@ export function CollectionsTree() {
   const deleteCollection = useCollectionStore((s) => s.deleteCollection);
   const deleteRequest = useCollectionStore((s) => s.deleteRequest);
   const duplicateRequest = useCollectionStore((s) => s.duplicateRequest);
-  const loadState = useRequestStore((s) => s.loadState);
+  const newTab = useTabsStore((s) => s.newTab);
   const setLoadedRequestID = useUIStore((s) => s.setLoadedRequestID);
   const loadedRequestID = useUIStore((s) => s.loadedRequestID);
   const filter = useUIStore((s) => s.sidebarFilter);
@@ -60,7 +60,13 @@ export function CollectionsTree() {
   };
 
   const loadRequest = (req: models.SavedRequest) => {
-    loadState(decodePayload(req.payload));
+    newTab({
+      title: req.name,
+      savedRequestID: req.id,
+      request: decodePayload(req.payload),
+      response: null,
+      dirty: false,
+    });
     setLoadedRequestID(req.id);
   };
 

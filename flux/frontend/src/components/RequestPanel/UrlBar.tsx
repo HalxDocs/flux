@@ -1,4 +1,4 @@
-import { Save, Send, X } from "lucide-react";
+import { Code2, Save, Send, X } from "lucide-react";
 import { useRequestStore } from "../../stores/useRequestStore";
 import { useResponseStore } from "../../stores/useResponseStore";
 import { useUIStore } from "../../stores/useUIStore";
@@ -16,6 +16,7 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
   const setUrl = useRequestStore((s) => s.setUrl);
   const isLoading = useResponseStore((s) => s.isLoading);
   const openSaveModal = useUIStore((s) => s.openSaveModal);
+  const openCodeGen = useUIStore((s) => s.openCodeGenModal);
 
   const displayed = url + buildQueryString(params);
 
@@ -48,6 +49,16 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
         autoComplete="off"
         className="flex-1 min-w-0 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
       />
+
+      <button
+        type="button"
+        onClick={openCodeGen}
+        title="Generate code (cURL / fetch / Python)"
+        className="h-[36px] w-[36px] flex items-center justify-center bg-card border border-border hover:border-blue rounded-md text-subtext hover:text-text transition-colors"
+        aria-label="Generate code"
+      >
+        <Code2 size={14} />
+      </button>
 
       <button
         type="button"

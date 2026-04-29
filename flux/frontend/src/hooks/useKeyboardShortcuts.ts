@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useRequestStore } from "../stores/useRequestStore";
 import { useResponseStore } from "../stores/useResponseStore";
+import { useTabsStore } from "../stores/useTabsStore";
 import { useUIStore } from "../stores/useUIStore";
 
 const isEditableTarget = (el: EventTarget | null): boolean => {
@@ -21,26 +21,32 @@ export function useKeyboardShortcuts(onSend: () => void) {
         return;
       }
 
-      if (e.key.toLowerCase() === "s") {
+      const k = e.key.toLowerCase();
+
+      if (k === "s") {
         e.preventDefault();
         useUIStore.getState().openSaveModal();
         return;
       }
 
-      if (e.key.toLowerCase() === "n") {
-        // Don't fight the native "new window" when an input is focused with
-        // text selected — only intercept when the user is not actively editing.
-        if (isEditableTarget(e.target)) return;
+      // Ctrl/Cmd+T or Ctrl/Cmd+N — new tab. Don't fight the OS "new window"
+      // when the user is mid-typing.
+      if (k === "t" || (k === "n" && !isEditableTarget(e.target))) {
         e.preventDefault();
-        useRequestStore.getState().reset();
-        useUIStore.getState().setLoadedRequestID(null);
-        useResponseStore.getState().clearResponse();
-        useUIStore.getState().setRequestTab("params");
+        useTabsStore.getState().newTab();
         document.getElementById("flux-url-bar")?.focus();
         return;
       }
 
-      if (e.key.toLowerCase() === "e") {
+      // Ctrl/Cmd+W — close active tab.
+      if (k === "w") {
+        e.preventDefault();
+        const { activeID } = useTabsStore.getState();
+        useTabsStore.getState().closeTab(activeID);
+        return;
+      }
+
+      if (k === "e") {
         e.preventDefault();
         const el = document.getElementById("flux-url-bar") as HTMLInputElement | null;
         el?.focus();

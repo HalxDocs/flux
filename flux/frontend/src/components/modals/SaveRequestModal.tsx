@@ -3,6 +3,7 @@ import { Modal } from "../shared/Modal";
 import { useUIStore } from "../../stores/useUIStore";
 import { useCollectionStore } from "../../stores/useCollectionStore";
 import { useRequestStore } from "../../stores/useRequestStore";
+import { useTabsStore } from "../../stores/useTabsStore";
 import { buildPayloadLiteral } from "../../lib/buildPayload";
 
 const NEW_COLLECTION_VALUE = "__new__";
@@ -13,6 +14,7 @@ export function SaveRequestModal() {
   const collections = useCollectionStore((s) => s.collections);
   const createCollection = useCollectionStore((s) => s.createCollection);
   const addRequest = useCollectionStore((s) => s.addRequest);
+  const markActiveSaved = useTabsStore((s) => s.markActiveSaved);
 
   const [name, setName] = useState("");
   const [collID, setCollID] = useState<string>("");
@@ -48,7 +50,9 @@ export function SaveRequestModal() {
         targetID = created.id;
       }
       const payload = buildPayloadLiteral(useRequestStore.getState());
-      await addRequest(targetID, name.trim(), payload);
+      const saved = await addRequest(targetID, name.trim(), payload);
+      markActiveSaved(saved.id, name.trim());
+      useUIStore.getState().setLoadedRequestID(saved.id);
       close();
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));

@@ -21,6 +21,18 @@ type UIStore = {
   openImportModal: () => void;
   closeImportModal: () => void;
 
+  codeGenModalOpen: boolean;
+  openCodeGenModal: () => void;
+  closeCodeGenModal: () => void;
+
+  settingsModalOpen: boolean;
+  openSettingsModal: () => void;
+  closeSettingsModal: () => void;
+
+  welcomeModalOpen: boolean;
+  openWelcomeModal: () => void;
+  closeWelcomeModal: () => void;
+
   loadedRequestID: string | null;
   setLoadedRequestID: (id: string | null) => void;
 
@@ -45,6 +57,18 @@ export const useUIStore = create<UIStore>((set) => ({
   importModalOpen: false,
   openImportModal: () => set({ importModalOpen: true }),
   closeImportModal: () => set({ importModalOpen: false }),
+
+  codeGenModalOpen: false,
+  openCodeGenModal: () => set({ codeGenModalOpen: true }),
+  closeCodeGenModal: () => set({ codeGenModalOpen: false }),
+
+  settingsModalOpen: false,
+  openSettingsModal: () => set({ settingsModalOpen: true }),
+  closeSettingsModal: () => set({ settingsModalOpen: false }),
+
+  welcomeModalOpen: false,
+  openWelcomeModal: () => set({ welcomeModalOpen: true }),
+  closeWelcomeModal: () => set({ welcomeModalOpen: false }),
 
   loadedRequestID: null,
   setLoadedRequestID: (loadedRequestID) => set({ loadedRequestID }),

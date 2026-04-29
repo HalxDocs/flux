@@ -13,7 +13,9 @@ import (
 	"flux/internal/history"
 	"flux/internal/models"
 	"flux/internal/postman"
+	"flux/internal/profile"
 	"flux/internal/requester"
+	"flux/internal/storage"
 )
 
 type App struct {
@@ -21,6 +23,7 @@ type App struct {
 	collections  *collections.Store
 	history      *history.Store
 	environments *environments.Store
+	profile      *profile.Store
 
 	// inflight tracks the currently executing SendRequest's cancel func, so
 	// CancelRequest from the UI can abort it. Phase 1 supports one in-flight
@@ -34,11 +37,13 @@ func NewApp() *App {
 		collections:  collections.NewStore(),
 		history:      history.NewStore(),
 		environments: environments.NewStore(),
+		profile:      profile.NewStore(),
 	}
 }
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	_ = a.profile.MarkLaunch()
 }
 
 // SendRequest executes an HTTP request and persists a history entry. The
@@ -65,6 +70,9 @@ func (a *App) SendRequest(payload models.RequestPayload) models.ResponseResult {
 	cancel()
 
 	_ = a.history.Append(payload, result)
+	if result.Error == "" {
+		_ = a.profile.IncrementRequestCount()
+	}
 	return result
 }
 
@@ -189,6 +197,23 @@ func (a *App) ReadFileText(path string) (string, error) {
 		return "", err
 	}
 	return string(data), nil
+}
+
+// --- Profile ---
+
+func (a *App) GetProfile() (profile.Profile, error) {
+	return a.profile.Get()
+}
+
+func (a *App) UpdateProfile(name, email string) error {
+	return a.profile.Update(name, email)
+}
+
+// AppDataDir returns the absolute path to the directory where Flux stores
+// collections, environments, history, and profile JSON. Used by the Settings
+// page so users know where their data lives.
+func (a *App) AppDataDir() (string, error) {
+	return storage.AppDir()
 }
 
 // nudge the linter — uuid stays in the import set even when only used by

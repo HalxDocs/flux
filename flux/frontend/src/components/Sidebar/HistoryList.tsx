@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { useHistoryStore } from "../../stores/useHistoryStore";
-import { useRequestStore } from "../../stores/useRequestStore";
 import { useUIStore } from "../../stores/useUIStore";
+import { useTabsStore, deriveTitle } from "../../stores/useTabsStore";
 import { decodePayload } from "../../lib/loadPayload";
 import { MethodBadge } from "../shared/MethodBadge";
 import { statusColor } from "../../lib/format";
@@ -12,7 +12,7 @@ import type { HttpMethod } from "../../types/request";
 export function HistoryList() {
   const allEntries = useHistoryStore((s) => s.entries);
   const clear = useHistoryStore((s) => s.clear);
-  const loadState = useRequestStore((s) => s.loadState);
+  const newTab = useTabsStore((s) => s.newTab);
   const setLoadedRequestID = useUIStore((s) => s.setLoadedRequestID);
   const filter = useUIStore((s) => s.sidebarFilter);
 
@@ -26,10 +26,16 @@ export function HistoryList() {
     );
   }, [allEntries, filter]);
 
-  const handleLoad = (entryID: string, payload: { url: string; method: string }) => {
-    loadState(decodePayload(payload));
+  const handleLoad = (payload: { url: string; method: string }) => {
+    const decoded = decodePayload(payload);
+    newTab({
+      title: deriveTitle(decoded),
+      savedRequestID: null,
+      request: decoded,
+      response: null,
+      dirty: false,
+    });
     setLoadedRequestID(null);
-    void entryID;
   };
 
   return (
@@ -58,7 +64,7 @@ export function HistoryList() {
             <button
               key={e.id}
               type="button"
-              onClick={() => handleLoad(e.id, e.payload)}
+              onClick={() => handleLoad(e.payload)}
               className="text-left px-3 py-1.5 flex items-center gap-2 hover:bg-cardHover transition-colors"
             >
               <MethodBadge method={(e.payload.method as HttpMethod) || "GET"} />

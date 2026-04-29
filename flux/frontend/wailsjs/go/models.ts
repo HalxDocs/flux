@@ -287,3 +287,32 @@ export namespace models {
 
 }
 
+export namespace profile {
+	
+	export class Profile {
+	    userId: string;
+	    name: string;
+	    email: string;
+	    createdAt: string;
+	    lastSeenAt: string;
+	    launchCount: number;
+	    requestCount: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Profile(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.userId = source["userId"];
+	        this.name = source["name"];
+	        this.email = source["email"];
+	        this.createdAt = source["createdAt"];
+	        this.lastSeenAt = source["lastSeenAt"];
+	        this.launchCount = source["launchCount"];
+	        this.requestCount = source["requestCount"];
+	    }
+	}
+
+}
+

@@ -6,6 +6,10 @@ export function AddRequestToCollection(arg1, arg2, arg3) {
   return window['go']['main']['App']['AddRequestToCollection'](arg1, arg2, arg3);
 }
 
+export function AppDataDir() {
+  return window['go']['main']['App']['AppDataDir']();
+}
+
 export function CancelRequest() {
   return window['go']['main']['App']['CancelRequest']();
 }
@@ -46,6 +50,10 @@ export function GetHistory() {
   return window['go']['main']['App']['GetHistory']();
 }
 
+export function GetProfile() {
+  return window['go']['main']['App']['GetProfile']();
+}
+
 export function ImportPostman(arg1, arg2) {
   return window['go']['main']['App']['ImportPostman'](arg1, arg2);
 }
@@ -72,6 +80,10 @@ export function SetActiveEnvironment(arg1) {
 
 export function UpdateEnvironment(arg1, arg2, arg3) {
   return window['go']['main']['App']['UpdateEnvironment'](arg1, arg2, arg3);
+}
+
+export function UpdateProfile(arg1, arg2) {
+  return window['go']['main']['App']['UpdateProfile'](arg1, arg2);
 }
 
 export function UpdateSavedRequest(arg1, arg2, arg3) {
