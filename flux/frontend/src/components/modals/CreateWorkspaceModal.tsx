@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Modal } from "../shared/Modal";
 import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
-import { useCollectionStore } from "../../stores/useCollectionStore";
-import { useHistoryStore } from "../../stores/useHistoryStore";
-import { useEnvStore } from "../../stores/useEnvStore";
 import { cn } from "../../lib/cn";
 
 const COLORS = [
@@ -20,14 +17,13 @@ const COLORS = [
 export function CreateWorkspaceModal({
   open,
   onClose,
+  onEnter,
 }: {
   open: boolean;
   onClose: () => void;
+  onEnter?: () => Promise<void>;
 }) {
   const createWs = useWorkspaceStore((s) => s.create);
-  const loadCollections = useCollectionStore((s) => s.load);
-  const loadHistory = useHistoryStore((s) => s.load);
-  const loadEnvs = useEnvStore((s) => s.load);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -51,10 +47,9 @@ export function CreateWorkspaceModal({
     setErr(null);
     try {
       await createWs(name.trim(), description.trim(), color);
-      // Reload workspace-scoped data into the new workspace
-      await Promise.all([loadCollections(), loadHistory(), loadEnvs()]);
       reset();
       onClose();
+      if (onEnter) await onEnter();
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     } finally {

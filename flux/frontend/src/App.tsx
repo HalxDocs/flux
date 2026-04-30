@@ -25,20 +25,19 @@ import { useProfileStore } from "./stores/useProfileStore";
 import { useWorkspaceStore } from "./stores/useWorkspaceStore";
 import "./App.css";
 
+type Screen = "loading" | "home" | "app";
+
 export default function App() {
   const loadWorkspaces = useWorkspaceStore((s) => s.load);
   const activeWorkspaceID = useWorkspaceStore((s) => s.activeID);
   const wsLoaded = useWorkspaceStore((s) => s.loaded);
-
+  const loadProfile = useProfileStore((s) => s.load);
   const loadCollections = useCollectionStore((s) => s.load);
   const loadHistory = useHistoryStore((s) => s.load);
   const loadEnvs = useEnvStore((s) => s.load);
-  const loadProfile = useProfileStore((s) => s.load);
   const hydrateTabs = useTabsStore((s) => s.hydrate);
 
-  // showHome: true = home screen, false = workspace app.
-  // Start hidden until we know whether a workspace is active.
-  const [showHome, setShowHome] = useState(false);
+  const [screen, setScreen] = useState<Screen>("loading");
 
   useEffect(() => {
     void (async () => {
@@ -46,21 +45,28 @@ export default function App() {
     })();
   }, [loadWorkspaces, loadProfile]);
 
-  // Once workspace status is known, decide which screen to show.
   useEffect(() => {
     if (!wsLoaded) return;
     if (!activeWorkspaceID) {
-      setShowHome(true);
+      setScreen("home");
     } else {
-      setShowHome(false);
+      // Existing active workspace on startup — go straight in.
       hydrateTabs();
-      void loadCollections();
-      void loadHistory();
-      void loadEnvs();
+      void Promise.all([loadCollections(), loadHistory(), loadEnvs()]).then(() =>
+        setScreen("app"),
+      );
     }
-  }, [wsLoaded, activeWorkspaceID, hydrateTabs, loadCollections, loadHistory, loadEnvs]);
+  // Only run when the initial load resolves, not on every store change.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wsLoaded]);
 
-  if (!wsLoaded) {
+  const enterApp = async () => {
+    hydrateTabs();
+    await Promise.all([loadCollections(), loadHistory(), loadEnvs()]);
+    setScreen("app");
+  };
+
+  if (screen === "loading") {
     return (
       <div className="h-screen w-screen bg-bg flex items-center justify-center">
         <div className="w-6 h-6 rounded-full border-2 border-blue border-t-transparent animate-spin" />
@@ -68,16 +74,16 @@ export default function App() {
     );
   }
 
-  if (showHome) {
+  if (screen === "home") {
     return (
       <>
-        <HomeScreen />
+        <HomeScreen onEnter={enterApp} />
         <ToastHost />
       </>
     );
   }
 
-  return <WorkspaceApp onGoHome={() => setShowHome(true)} />;
+  return <WorkspaceApp onGoHome={() => setScreen("home")} />;
 }
 
 function WorkspaceApp({ onGoHome }: { onGoHome: () => void }) {
