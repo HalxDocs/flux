@@ -1,7 +1,5 @@
 import { useUIStore, type RequestTab } from "../../stores/useUIStore";
 import { Tabs, type TabItem } from "../shared/Tabs";
-import { UrlBar } from "./UrlBar";
-import { UrlPreview } from "./UrlPreview";
 import { ParamsTab } from "./tabs/ParamsTab";
 import { HeadersTab } from "./tabs/HeadersTab";
 import { BodyTab } from "./tabs/BodyTab";
@@ -29,8 +27,6 @@ export function RequestPanel({
       style={{ width: `${width}px` }}
       className="shrink-0 h-full bg-bg flex flex-col min-w-0"
     >
-      <UrlBar onSend={onSend} />
-      <UrlPreview />
       <Tabs tabs={TABS} active={requestTab} onChange={setRequestTab} />
       <div className="flex-1 overflow-y-auto">
         {requestTab === "params" && <ParamsTab />}

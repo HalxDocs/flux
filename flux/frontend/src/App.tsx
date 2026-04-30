@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { TabBar } from "./components/Tabs/TabBar";
+import { UrlBar } from "./components/RequestPanel/UrlBar";
+import { UrlPreview } from "./components/RequestPanel/UrlPreview";
 import { RequestPanel } from "./components/RequestPanel/RequestPanel";
 import { ResponsePane } from "./components/ResponsePane/ResponsePane";
 import { Splitter } from "./components/shared/Splitter";
@@ -98,6 +100,8 @@ function WorkspaceApp({ onGoHome }: { onGoHome: () => void }) {
       <Sidebar onGoHome={onGoHome} />
       <div className="flex-1 flex flex-col min-w-0">
         <TabBar />
+        <UrlBar onSend={send} />
+        <UrlPreview />
         <div className="flex-1 flex min-h-0">
           <RequestPanel onSend={send} width={width} />
           <Splitter onResize={onResize} />
