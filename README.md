@@ -47,6 +47,20 @@ Everything is local. No data leaves your machine.
 
 ---
 
+## macOS — "flux Not Opened" warning
+
+macOS blocks apps that aren't notarized by Apple. Flux is safe — this warning appears because the app isn't yet signed with an Apple Developer certificate.
+
+**To open it anyway:**
+
+1. Go to **System Settings → Privacy & Security**
+2. Scroll down until you see _"flux was blocked from use because it is not from an identified developer"_
+3. Click **Open Anyway**
+
+Or: right-click `flux.app` → **Open** → **Open** in the dialog that appears.
+
+---
+
 ## Built with
 
 | Layer | Technology |
