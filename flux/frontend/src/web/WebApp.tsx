@@ -49,7 +49,7 @@ const OS_LABEL: Record<string, string> = {
 function download() {
   const os = getOS();
   const url = DOWNLOAD_URLS[os] ?? RELEASES_URL;
-  window.location.href = url;
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 function open(url: string) {
