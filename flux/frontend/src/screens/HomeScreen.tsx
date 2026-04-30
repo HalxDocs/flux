@@ -11,10 +11,11 @@ import {
   LayersIcon,
   PlusSignIcon,
   ArrowLeft01Icon,
-  WorkflowCircle01Icon,
-  Layers01Icon,
   ShieldKeyIcon,
   ArrowDataTransferHorizontalIcon,
+  ComputerTerminal01Icon,
+  KeyboardIcon,
+  Layers01Icon,
 } from "@hugeicons/core-free-icons";
 import { useWorkspaceStore } from "../stores/useWorkspaceStore";
 import { useTabsStore } from "../stores/useTabsStore";
@@ -24,47 +25,45 @@ import { toast } from "../stores/useToastStore";
 import fluxLogo from "../assets/images/fluxloo.jpeg";
 import type { workspaces } from "../../wailsjs/go/models";
 
-const FEATURES = [
+const STEPS = [
   {
-    icon: DatabaseIcon,
-    title: "Local-first",
-    desc: "All data lives on your machine as plain JSON. No cloud dependency.",
-  },
-  {
+    number: "01",
     icon: FolderLibraryIcon,
-    title: "Workspaces",
-    desc: "Organise collections and environments by project or team.",
+    title: "Create a workspace",
+    desc: "Group API collections by project. Each workspace is a plain folder you own — no lock-in.",
   },
   {
-    icon: ArrowDataTransferHorizontalIcon,
-    title: "Cross-device sync",
-    desc: "Put a workspace folder in Dropbox or Drive — it syncs automatically.",
+    number: "02",
+    icon: PlusSignIcon,
+    title: "Build your collection",
+    desc: "Import from Postman, paste a cURL, or craft requests from scratch with full auth support.",
   },
   {
-    icon: CodeIcon,
-    title: "Code generation",
-    desc: "Copy any request as cURL, JavaScript fetch, or Python requests.",
+    number: "03",
+    icon: ArrowRight01Icon,
+    title: "Send & inspect",
+    desc: "Fire requests and get instant results with pretty-printed JSON, XML, and HTML.",
   },
-  {
-    icon: LayersIcon,
-    title: "Postman import",
-    desc: "Drop in a Postman v2.1 JSON and all requests land instantly.",
-  },
-  {
-    icon: ShieldKeyIcon,
-    title: "Auth support",
-    desc: "Bearer, Basic, and API Key auth — all resolved with env variables.",
-  },
-  {
-    icon: GlobalIcon,
-    title: "Environments",
-    desc: "Named variable sets with {{VAR}} interpolation across all fields.",
-  },
-  {
-    icon: GitBranchIcon,
-    title: "Git-friendly",
-    desc: "Every file is human-readable JSON. Commit your workspace to git.",
-  },
+];
+
+const FEATURES = [
+  { icon: DatabaseIcon, title: "Local-first", desc: "Plain JSON files on your machine. No cloud required." },
+  { icon: ArrowDataTransferHorizontalIcon, title: "Cross-device sync", desc: "Drop the folder into Dropbox or Drive. Done." },
+  { icon: CodeIcon, title: "Code generation", desc: "Export as cURL, JavaScript fetch, or Python requests." },
+  { icon: LayersIcon, title: "Postman import", desc: "Drop in a v2.1 collection and all requests land instantly." },
+  { icon: ShieldKeyIcon, title: "Auth support", desc: "Bearer, Basic, and API Key — resolved via env variables." },
+  { icon: GlobalIcon, title: "Environments", desc: "{{VAR}} interpolation across every field in every request." },
+  { icon: GitBranchIcon, title: "Git-friendly", desc: "Every file is readable JSON. Commit your workspace to git." },
+  { icon: ComputerTerminal01Icon, title: "No lock-in", desc: "Own your data. Export, edit, move, or delete at any time." },
+];
+
+const SHORTCUTS = [
+  { keys: ["Ctrl", "Enter"], desc: "Send request" },
+  { keys: ["Ctrl", "S"], desc: "Save request" },
+  { keys: ["Ctrl", "T"], desc: "New tab" },
+  { keys: ["Ctrl", "W"], desc: "Close tab" },
+  { keys: ["Ctrl", "E"], desc: "Focus URL bar" },
+  { keys: ["Ctrl", "Shift", "I"], desc: "Import Postman collection" },
 ];
 
 function fmtDate(iso: string): string {
@@ -173,11 +172,6 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
     }
   };
 
-  const handleCreated = async () => {
-    setCreateOpen(false);
-    // The create modal already called onEnter via its own flow
-  };
-
   return (
     <div className="h-screen w-screen bg-bg flex flex-col overflow-hidden">
       {/* Top bar */}
@@ -231,84 +225,157 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
 
       <CreateWorkspaceModal
         open={createOpen}
-        onClose={handleCreated}
+        onClose={() => setCreateOpen(false)}
         onEnter={onEnter}
       />
     </div>
   );
 }
 
+function Kbd({ children }: { children: string }) {
+  return (
+    <span className="inline-flex items-center h-[20px] px-1.5 bg-surface border border-border rounded text-[10px] font-mono text-subtext leading-none">
+      {children}
+    </span>
+  );
+}
+
 function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
   return (
-    <div className="max-w-[900px] mx-auto px-6 py-16 flex flex-col gap-20">
+    <div className="max-w-[860px] mx-auto px-6 py-14 flex flex-col gap-16">
+
       {/* Hero */}
-      <div className="flex flex-col items-center text-center gap-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue/10 border border-blue/20 rounded-full text-11 text-blue font-semibold tracking-wide uppercase">
-          <HugeiconsIcon icon={WorkflowCircle01Icon} size={12} color="currentColor" />
+      <section className="flex flex-col items-center text-center gap-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue/10 border border-blue/20 rounded-full text-[10px] text-blue font-semibold tracking-[0.12em] uppercase">
           Local-first · No account · No telemetry
         </div>
 
-        <h1 className="text-[42px] font-black text-text leading-tight tracking-tight max-w-[640px]">
+        <h1
+          className="text-48 font-bold text-text leading-[1.08] tracking-[-0.03em] max-w-[620px]"
+          style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
+        >
           The API client built for{" "}
-          <span className="text-blue">developers</span>{" "}
-          who hate bloat.
+          <span className="text-blue">speed</span>.
         </h1>
 
-        <p className="text-16 text-subtext max-w-[500px] leading-relaxed">
-          Flux is a fast, local-first API client. Your collections, environments,
-          and history live on your machine as plain JSON — commit them, sync them,
-          or back them up however you like.
+        <p className="text-15 text-subtext max-w-[460px] leading-relaxed">
+          Fast, open, and beautifully minimal. Your collections live as plain JSON —
+          commit them, sync them, share them however you like.
         </p>
 
         <button
           type="button"
           onClick={onGoToWorkspaces}
-          className="flex items-center gap-3 h-[48px] px-8 text-15 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
+          className="flex items-center gap-3 h-[46px] px-7 text-14 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
         >
-          <span>Go to workspaces</span>
-          <HugeiconsIcon icon={ArrowRight01Icon} size={18} color="currentColor" />
+          <span>Open workspaces</span>
+          <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="currentColor" />
         </button>
-      </div>
+      </section>
 
-      {/* Features grid */}
-      <div className="flex flex-col gap-6">
-        <h2 className="text-11 text-subtext font-semibold uppercase tracking-widest text-center">
-          Everything you need, nothing you don't
-        </h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {FEATURES.map((f) => (
+      {/* Steps */}
+      <section className="flex flex-col gap-5">
+        <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em] text-center">
+          Get started in 30 seconds
+        </p>
+        <div className="grid grid-cols-3 gap-4">
+          {STEPS.map((s) => (
             <div
-              key={f.title}
-              className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3 hover:border-blue/30 transition-colors"
+              key={s.number}
+              className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-4 hover:border-blue/30 transition-colors"
             >
-              <div className="w-[36px] h-[36px] rounded-lg bg-blue/10 flex items-center justify-center">
-                <HugeiconsIcon icon={f.icon} size={18} color="#3B82F6" strokeWidth={1.5} />
+              <div className="flex items-center justify-between">
+                <div className="w-[36px] h-[36px] rounded-xl bg-blue/10 flex items-center justify-center">
+                  <HugeiconsIcon icon={s.icon} size={17} color="#3B82F6" strokeWidth={1.5} />
+                </div>
+                <span
+                  className="text-22 font-bold tabular-nums"
+                  style={{ color: "#2a2a2a", fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
+                >
+                  {s.number}
+                </span>
               </div>
               <div>
-                <div className="text-12 font-semibold text-text">{f.title}</div>
-                <div className="text-11 text-subtext mt-1 leading-relaxed">{f.desc}</div>
+                <div className="text-13 font-semibold text-text mb-1">{s.title}</div>
+                <div className="text-12 text-subtext leading-relaxed">{s.desc}</div>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </section>
+
+      {/* Features */}
+      <section className="flex flex-col gap-5">
+        <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em] text-center">
+          Everything you need, nothing you don't
+        </p>
+        <div className="grid grid-cols-4 gap-3">
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="bg-card border border-border rounded-xl p-4 flex flex-col gap-2.5 hover:border-blue/30 transition-colors"
+            >
+              <HugeiconsIcon icon={f.icon} size={16} color="#3B82F6" strokeWidth={1.5} />
+              <div>
+                <div className="text-12 font-semibold text-text">{f.title}</div>
+                <div className="text-11 text-subtext mt-0.5 leading-relaxed">{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Sync callout */}
-      <div className="bg-card border border-border rounded-2xl p-6 flex items-start gap-4">
-        <div className="w-[44px] h-[44px] rounded-xl bg-teal/10 flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={Layers01Icon} size={22} color="#14B8A6" strokeWidth={1.5} />
+      <section className="bg-card border border-border rounded-2xl p-5 flex items-start gap-4">
+        <div className="w-[40px] h-[40px] rounded-xl bg-teal/10 flex items-center justify-center shrink-0">
+          <HugeiconsIcon icon={Layers01Icon} size={20} color="#00D4AA" strokeWidth={1.5} />
         </div>
         <div>
-          <div className="text-14 font-semibold text-text mb-1">
+          <div className="text-13 font-semibold text-text mb-1">
             Sync to any device — no account needed
           </div>
           <div className="text-12 text-subtext leading-relaxed max-w-[560px]">
-            Each workspace is just a folder. Drop it into Dropbox, OneDrive, or Google Drive
-            and it syncs automatically. On your second device, open Flux → "Open folder" →
-            pick the synced folder. Done. No login, no subscription, no data sent anywhere.
+            Each workspace is just a folder. Drop it into Dropbox, OneDrive, or Google Drive and it
+            syncs automatically. On your second device, open Flux → "Open folder" → pick the synced
+            folder. Done. No login, no subscription, no data sent anywhere.
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Keyboard shortcuts */}
+      <section className="flex flex-col gap-5">
+        <div className="flex items-center gap-2">
+          <HugeiconsIcon icon={KeyboardIcon} size={14} color="#888888" strokeWidth={1.5} />
+          <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em]">
+            Keyboard shortcuts
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-x-8 gap-y-0">
+          {SHORTCUTS.map((s) => (
+            <div
+              key={s.desc}
+              className="flex items-center gap-3 py-2.5 border-b border-border/50 last:border-0"
+            >
+              <div className="flex items-center gap-1 shrink-0">
+                {s.keys.map((k) => (
+                  <Kbd key={k}>{k}</Kbd>
+                ))}
+              </div>
+              <span className="text-12 text-subtext">{s.desc}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="flex flex-col items-center gap-2 pt-2 pb-4">
+        <div className="w-[32px] h-px bg-border" />
+        <p className="text-11 text-subtext">
+          Built by{" "}
+          <span className="text-text font-semibold">HalxDocs</span>
+          {" "}· Open source · Local-first
+        </p>
+      </footer>
     </div>
   );
 }
@@ -325,14 +392,16 @@ function WorkspacesView({
   onCreate: () => void;
 }) {
   return (
-    <div className="max-w-[900px] mx-auto px-6 py-10">
+    <div className="max-w-[860px] mx-auto px-6 py-10">
       {wsList.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
           <div className="w-[64px] h-[64px] rounded-2xl bg-blue/10 flex items-center justify-center">
             <HugeiconsIcon icon={FolderLibraryIcon} size={32} color="#3B82F6" strokeWidth={1.5} />
           </div>
           <div>
-            <div className="text-18 font-bold text-text">No workspaces yet</div>
+            <div className="text-18 font-bold text-text" style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}>
+              No workspaces yet
+            </div>
             <div className="text-13 text-subtext mt-1 max-w-[340px]">
               Create your first workspace to start organising your API collections.
             </div>
@@ -348,7 +417,12 @@ function WorkspacesView({
         </div>
       ) : (
         <>
-          <h1 className="text-22 font-bold text-text mb-6">Your workspaces</h1>
+          <h1
+            className="text-22 font-bold text-text mb-6"
+            style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
+          >
+            Your workspaces
+          </h1>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
             {wsList.map((ws) => (
               <div key={ws.id} className="relative">
@@ -357,11 +431,7 @@ function WorkspacesView({
                     <div className="w-5 h-5 rounded-full border-2 border-blue border-t-transparent animate-spin" />
                   </div>
                 )}
-                <WorkspaceCard
-                  ws={ws}
-                  onOpen={onOpen}
-                  busy={switching !== null}
-                />
+                <WorkspaceCard ws={ws} onOpen={onOpen} busy={switching !== null} />
               </div>
             ))}
           </div>

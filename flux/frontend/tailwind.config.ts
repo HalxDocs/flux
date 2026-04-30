@@ -23,14 +23,21 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'Menlo', 'monospace'],
+        display: ['"Space Grotesk"', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         '11': ['11px', '16px'],
         '12': ['12px', '18px'],
         '13': ['13px', '20px'],
         '14': ['14px', '20px'],
+        '15': ['15px', '22px'],
         '16': ['16px', '24px'],
+        '18': ['18px', '26px'],
         '20': ['20px', '28px'],
+        '22': ['22px', '30px'],
+        '28': ['28px', '34px'],
+        '36': ['36px', '42px'],
+        '48': ['48px', '54px'],
       },
       spacing: {
         '1': '4px',

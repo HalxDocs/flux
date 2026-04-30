@@ -30,7 +30,7 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 h-[56px] border-b border-border">
+    <div className="flex items-center gap-2 px-4 h-[60px] border-b border-border">
       <MethodSelect value={method} onChange={setMethod} />
 
       <input
@@ -47,7 +47,7 @@ export function UrlBar({ onSend }: { onSend?: () => void }) {
         }}
         spellCheck={false}
         autoComplete="off"
-        className="flex-1 min-w-0 h-[36px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
+        className="flex-1 min-w-0 h-[40px] px-3 bg-card border border-border rounded-md font-mono text-13 text-text placeholder:text-subtext outline-none focus:border-blue focus:ring-2 focus:ring-blue transition-colors"
       />
 
       <button

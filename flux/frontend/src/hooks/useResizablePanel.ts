@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "flux:requestPanelWidth";
-const DEFAULT_WIDTH = 560;
+const DEFAULT_WIDTH = 680;
 const MIN_WIDTH = 360;
 const MAX_WIDTH_RATIO = 0.7; // up to 70% of viewport
 
