@@ -24,6 +24,34 @@ const GITHUB_URL = "https://github.com/HalxDocs/flux";
 const RELEASES_URL = "https://github.com/HalxDocs/flux/releases/latest";
 const PORTFOLIO_URL = "https://halxdocs.com";
 
+const DL_BASE = "https://github.com/HalxDocs/flux/releases/latest/download";
+const DOWNLOAD_URLS: Record<string, string> = {
+  windows: `${DL_BASE}/flux-windows-amd64.exe`,
+  mac: `${DL_BASE}/flux-macos-universal.zip`,
+  linux: `${DL_BASE}/flux-linux-amd64`,
+};
+
+function getOS(): "windows" | "mac" | "linux" | "other" {
+  const ua = navigator.userAgent;
+  if (ua.includes("Win")) return "windows";
+  if (ua.includes("Mac")) return "mac";
+  if (ua.includes("Linux") || ua.includes("X11")) return "linux";
+  return "other";
+}
+
+const OS_LABEL: Record<string, string> = {
+  windows: "Download for Windows",
+  mac: "Download for macOS",
+  linux: "Download for Linux",
+  other: "Download for Desktop",
+};
+
+function download() {
+  const os = getOS();
+  const url = DOWNLOAD_URLS[os] ?? RELEASES_URL;
+  window.location.href = url;
+}
+
 function open(url: string) {
   window.open(url, "_blank", "noopener,noreferrer");
 }
@@ -131,7 +159,7 @@ export function WebApp() {
             </button>
             <button
               type="button"
-              onClick={() => open(RELEASES_URL)}
+              onClick={download}
               className="flex items-center gap-1.5 h-[32px] px-3 sm:px-4 text-12 font-bold text-white bg-blue hover:bg-blue-hover rounded-lg transition-colors"
             >
               <HugeiconsIcon icon={Download02Icon} size={13} color="currentColor" />
@@ -165,11 +193,11 @@ export function WebApp() {
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <button
               type="button"
-              onClick={() => open(RELEASES_URL)}
+              onClick={download}
               className="flex items-center gap-3 h-[46px] px-7 text-14 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
             >
               <HugeiconsIcon icon={Download02Icon} size={16} color="currentColor" />
-              <span>Download for Desktop</span>
+              <span>{OS_LABEL[getOS()]}</span>
             </button>
             <button
               type="button"
@@ -291,11 +319,11 @@ export function WebApp() {
           </p>
           <button
             type="button"
-            onClick={() => open(RELEASES_URL)}
+            onClick={download}
             className="flex items-center gap-3 h-[46px] px-7 text-14 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
           >
             <HugeiconsIcon icon={Download02Icon} size={16} color="currentColor" />
-            Download for Desktop
+            {OS_LABEL[getOS()]}
           </button>
           <p className="text-11 text-subtext/60">Windows · macOS · Linux</p>
         </section>
