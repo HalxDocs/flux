@@ -97,6 +97,29 @@ function WorkspaceApp({ onGoHome }: { onGoHome: () => void }) {
 
   return (
     <div className="h-screen w-screen flex bg-bg text-text">
+      {/* Mobile: show a "use desktop" message instead of the full app UI */}
+      <div className="md:hidden fixed inset-0 z-50 bg-bg flex flex-col items-center justify-center gap-5 p-8 text-center">
+        <div className="w-[64px] h-[64px] rounded-2xl bg-blue/10 flex items-center justify-center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+        <div>
+          <div className="text-16 font-bold text-text" style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}>
+            Flux works best on desktop
+          </div>
+          <div className="text-13 text-subtext mt-2 max-w-[300px] leading-relaxed">
+            The full API client is designed for desktop. Open Flux on your computer for the complete experience.
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onGoHome}
+          className="flex items-center gap-2 h-[38px] px-5 text-13 font-semibold text-blue bg-blue/10 border border-blue/20 rounded-xl hover:bg-blue/15 transition-colors"
+        >
+          ← Back to home
+        </button>
+      </div>
       <Sidebar onGoHome={onGoHome} />
       <div className="flex-1 flex flex-col min-w-0">
         <TabBar />

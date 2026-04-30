@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowRight01Icon,
@@ -16,7 +16,10 @@ import {
   ComputerTerminal01Icon,
   KeyboardIcon,
   Layers01Icon,
+  GithubIcon,
+  StarIcon,
 } from "@hugeicons/core-free-icons";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import { useWorkspaceStore } from "../stores/useWorkspaceStore";
 import { useTabsStore } from "../stores/useTabsStore";
 import { CreateWorkspaceModal } from "../components/modals/CreateWorkspaceModal";
@@ -24,6 +27,51 @@ import { PickFolder } from "../../wailsjs/go/main/App";
 import { toast } from "../stores/useToastStore";
 import fluxLogo from "../assets/images/fluxloo.jpeg";
 import type { workspaces } from "../../wailsjs/go/models";
+
+const GITHUB_URL = "https://github.com/HalxDocs/flux";
+const PORTFOLIO_URL = "https://halxdocs.com";
+
+function openExternal(url: string) {
+  try {
+    BrowserOpenURL(url);
+  } catch {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
+
+function useGitHubStars(repo: string) {
+  const [stars, setStars] = useState<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchStars = async () => {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}`, {
+        headers: { Accept: "application/vnd.github.v3+json" },
+      });
+      if (!res.ok) return;
+      const data = await res.json() as { stargazers_count: number };
+      setStars(data.stargazers_count);
+    } catch {
+      // network unavailable — keep showing whatever we have
+    }
+  };
+
+  useEffect(() => {
+    void fetchStars();
+    timerRef.current = setInterval(() => void fetchStars(), 60_000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repo]);
+
+  return stars;
+}
+
+function fmtStars(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
 
 const STEPS = [
   {
@@ -48,13 +96,13 @@ const STEPS = [
 
 const FEATURES = [
   { icon: DatabaseIcon, title: "Local-first", desc: "Plain JSON files on your machine. No cloud required." },
-  { icon: ArrowDataTransferHorizontalIcon, title: "Cross-device sync", desc: "Drop the folder into Dropbox or Drive. Done." },
-  { icon: CodeIcon, title: "Code generation", desc: "Export as cURL, JavaScript fetch, or Python requests." },
-  { icon: LayersIcon, title: "Postman import", desc: "Drop in a v2.1 collection and all requests land instantly." },
-  { icon: ShieldKeyIcon, title: "Auth support", desc: "Bearer, Basic, and API Key — resolved via env variables." },
-  { icon: GlobalIcon, title: "Environments", desc: "{{VAR}} interpolation across every field in every request." },
-  { icon: GitBranchIcon, title: "Git-friendly", desc: "Every file is readable JSON. Commit your workspace to git." },
-  { icon: ComputerTerminal01Icon, title: "No lock-in", desc: "Own your data. Export, edit, move, or delete at any time." },
+  { icon: ArrowDataTransferHorizontalIcon, title: "Cross-device sync", desc: "Drop the folder into Dropbox or Drive." },
+  { icon: CodeIcon, title: "Code generation", desc: "Export as cURL, JavaScript fetch, or Python." },
+  { icon: LayersIcon, title: "Postman import", desc: "Drop in a v2.1 collection instantly." },
+  { icon: ShieldKeyIcon, title: "Auth support", desc: "Bearer, Basic, and API Key via env variables." },
+  { icon: GlobalIcon, title: "Environments", desc: "{{VAR}} interpolation across every field." },
+  { icon: GitBranchIcon, title: "Git-friendly", desc: "Readable JSON — commit your workspace to git." },
+  { icon: ComputerTerminal01Icon, title: "No lock-in", desc: "Own your data. Export, move, or delete anytime." },
 ];
 
 const SHORTCUTS = [
@@ -144,6 +192,7 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
   const switchWs = useWorkspaceStore((s) => s.switch);
   const openFromFolder = useWorkspaceStore((s) => s.openFromFolder);
   const resetTabs = useTabsStore((s) => s.resetTabs);
+  const stars = useGitHubStars("HalxDocs/flux");
 
   const [view, setView] = useState<View>("landing");
   const [createOpen, setCreateOpen] = useState(false);
@@ -175,25 +224,38 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
   return (
     <div className="h-screen w-screen bg-bg flex flex-col overflow-hidden">
       {/* Top bar */}
-      <header className="h-[56px] px-6 flex items-center justify-between border-b border-border shrink-0">
-        <div className="flex items-center gap-3">
+      <header className="h-[56px] px-4 sm:px-6 flex items-center justify-between border-b border-border shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
           {view === "workspaces" && (
             <button
               type="button"
               onClick={() => setView("landing")}
-              className="flex items-center gap-1.5 text-12 text-subtext hover:text-text transition-colors mr-2"
+              className="flex items-center gap-1.5 text-12 text-subtext hover:text-text transition-colors mr-1"
             >
               <HugeiconsIcon icon={ArrowLeft01Icon} size={14} color="currentColor" />
-              <span>Back</span>
+              <span className="hidden sm:inline">Back</span>
             </button>
           )}
-          <img src={fluxLogo} alt="Flux" className="h-[32px] w-auto object-contain" />
+          <img src={fluxLogo} alt="Flux" className="h-[28px] sm:h-[32px] w-auto object-contain" />
         </div>
         <div className="flex items-center gap-2">
+          {/* GitHub stars */}
+          <button
+            type="button"
+            onClick={() => openExternal(GITHUB_URL)}
+            className="hidden sm:flex items-center gap-1.5 h-[30px] px-2.5 text-12 text-subtext bg-card border border-border rounded-lg hover:border-blue/40 hover:text-text transition-all"
+            title="Star on GitHub"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={13} color="currentColor" />
+            <HugeiconsIcon icon={StarIcon} size={11} color="#f0a500" strokeWidth={2} />
+            <span className="font-mono text-11 min-w-[24px] text-center">
+              {stars === null ? "—" : fmtStars(stars)}
+            </span>
+          </button>
           <button
             type="button"
             onClick={handleOpenFolder}
-            className="flex items-center gap-2 h-[32px] px-3 text-12 text-subtext bg-card border border-border rounded-lg hover:border-blue/40 hover:text-text transition-all"
+            className="hidden sm:flex items-center gap-2 h-[32px] px-3 text-12 text-subtext bg-card border border-border rounded-lg hover:border-blue/40 hover:text-text transition-all"
           >
             <HugeiconsIcon icon={FolderOpenIcon} size={13} color="currentColor" />
             <span>Open folder</span>
@@ -201,10 +263,11 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-2 h-[32px] px-4 text-12 font-bold text-white bg-blue hover:bg-blue-hover rounded-lg transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 h-[32px] px-3 sm:px-4 text-12 font-bold text-white bg-blue hover:bg-blue-hover rounded-lg transition-colors"
           >
             <HugeiconsIcon icon={PlusSignIcon} size={13} color="currentColor" />
-            <span>New workspace</span>
+            <span className="hidden sm:inline">New workspace</span>
+            <span className="sm:hidden">New</span>
           </button>
         </div>
       </header>
@@ -212,7 +275,10 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
       {/* Content */}
       <main className="flex-1 overflow-y-auto">
         {view === "landing" ? (
-          <LandingView onGoToWorkspaces={() => setView("workspaces")} />
+          <LandingView
+            onGoToWorkspaces={() => setView("workspaces")}
+            stars={stars}
+          />
         ) : (
           <WorkspacesView
             workspaces={workspaceList}
@@ -240,25 +306,43 @@ function Kbd({ children }: { children: string }) {
   );
 }
 
-function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
+function LandingView({
+  onGoToWorkspaces,
+  stars,
+}: {
+  onGoToWorkspaces: () => void;
+  stars: number | null;
+}) {
   return (
-    <div className="max-w-[860px] mx-auto px-6 py-14 flex flex-col gap-16">
+    <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-10 sm:py-14 flex flex-col gap-12 sm:gap-16">
 
       {/* Hero */}
-      <section className="flex flex-col items-center text-center gap-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue/10 border border-blue/20 rounded-full text-[10px] text-blue font-semibold tracking-[0.12em] uppercase">
-          Local-first · No account · No telemetry
+      <section className="flex flex-col items-center text-center gap-5 sm:gap-6">
+        <div className="flex items-center gap-3 flex-wrap justify-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue/10 border border-blue/20 rounded-full text-[10px] text-blue font-semibold tracking-[0.12em] uppercase">
+            Local-first · No account · No telemetry
+          </div>
+          {/* GitHub badge */}
+          <button
+            type="button"
+            onClick={() => openExternal(GITHUB_URL)}
+            className="sm:hidden inline-flex items-center gap-1.5 px-2.5 py-1 bg-card border border-border rounded-full text-[10px] text-subtext hover:text-text hover:border-blue/40 transition-all"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={11} color="currentColor" />
+            <HugeiconsIcon icon={StarIcon} size={10} color="#f0a500" strokeWidth={2} />
+            <span className="font-mono">{stars === null ? "—" : fmtStars(stars)}</span>
+          </button>
         </div>
 
         <h1
-          className="text-48 font-bold text-text leading-[1.08] tracking-[-0.03em] max-w-[620px]"
+          className="text-[38px] sm:text-48 font-bold text-text leading-[1.08] tracking-[-0.03em] max-w-[560px] sm:max-w-[620px]"
           style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
         >
           The API client built for{" "}
           <span className="text-blue">speed</span>.
         </h1>
 
-        <p className="text-15 text-subtext max-w-[460px] leading-relaxed">
+        <p className="text-13 sm:text-15 text-subtext max-w-[380px] sm:max-w-[460px] leading-relaxed">
           Fast, open, and beautifully minimal. Your collections live as plain JSON —
           commit them, sync them, share them however you like.
         </p>
@@ -266,19 +350,24 @@ function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
         <button
           type="button"
           onClick={onGoToWorkspaces}
-          className="flex items-center gap-3 h-[46px] px-7 text-14 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
+          className="flex items-center gap-3 h-[44px] sm:h-[46px] px-6 sm:px-7 text-13 sm:text-14 font-bold text-white bg-blue hover:bg-blue-hover rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue/20"
         >
           <span>Open workspaces</span>
           <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="currentColor" />
         </button>
+
+        {/* Mobile download hint */}
+        <p className="sm:hidden text-11 text-subtext/60 mt-1">
+          Download Flux for the best experience on desktop
+        </p>
       </section>
 
       {/* Steps */}
-      <section className="flex flex-col gap-5">
+      <section className="flex flex-col gap-4 sm:gap-5">
         <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em] text-center">
           Get started in 30 seconds
         </p>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {STEPS.map((s) => (
             <div
               key={s.number}
@@ -305,11 +394,11 @@ function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
       </section>
 
       {/* Features */}
-      <section className="flex flex-col gap-5">
+      <section className="flex flex-col gap-4 sm:gap-5">
         <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em] text-center">
           Everything you need, nothing you don't
         </p>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {FEATURES.map((f) => (
             <div
               key={f.title}
@@ -334,7 +423,7 @@ function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
           <div className="text-13 font-semibold text-text mb-1">
             Sync to any device — no account needed
           </div>
-          <div className="text-12 text-subtext leading-relaxed max-w-[560px]">
+          <div className="text-12 text-subtext leading-relaxed">
             Each workspace is just a folder. Drop it into Dropbox, OneDrive, or Google Drive and it
             syncs automatically. On your second device, open Flux → "Open folder" → pick the synced
             folder. Done. No login, no subscription, no data sent anywhere.
@@ -343,18 +432,18 @@ function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
       </section>
 
       {/* Keyboard shortcuts */}
-      <section className="flex flex-col gap-5">
+      <section className="flex flex-col gap-4 sm:gap-5">
         <div className="flex items-center gap-2">
           <HugeiconsIcon icon={KeyboardIcon} size={14} color="#888888" strokeWidth={1.5} />
           <p className="text-[10px] font-semibold text-subtext uppercase tracking-[0.14em]">
             Keyboard shortcuts
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-0">
           {SHORTCUTS.map((s) => (
             <div
               key={s.desc}
-              className="flex items-center gap-3 py-2.5 border-b border-border/50 last:border-0"
+              className="flex items-center gap-3 py-2.5 border-b border-border/50"
             >
               <div className="flex items-center gap-1 shrink-0">
                 {s.keys.map((k) => (
@@ -370,10 +459,25 @@ function LandingView({ onGoToWorkspaces }: { onGoToWorkspaces: () => void }) {
       {/* Footer */}
       <footer className="flex flex-col items-center gap-2 pt-2 pb-4">
         <div className="w-[32px] h-px bg-border" />
-        <p className="text-11 text-subtext">
+        <p className="text-11 text-subtext text-center">
           Built by{" "}
-          <span className="text-text font-semibold">HalxDocs</span>
-          {" "}· Open source · Local-first
+          <button
+            type="button"
+            onClick={() => openExternal(PORTFOLIO_URL)}
+            className="text-text font-semibold hover:text-blue transition-colors"
+          >
+            HalxDocs
+          </button>
+          {" "}·{" "}
+          <button
+            type="button"
+            onClick={() => openExternal(GITHUB_URL)}
+            className="inline-flex items-center gap-1 hover:text-text transition-colors"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={11} color="currentColor" />
+            Open source
+          </button>
+          {" "}· Local-first
         </p>
       </footer>
     </div>
@@ -392,14 +496,17 @@ function WorkspacesView({
   onCreate: () => void;
 }) {
   return (
-    <div className="max-w-[860px] mx-auto px-6 py-10">
+    <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-10">
       {wsList.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
           <div className="w-[64px] h-[64px] rounded-2xl bg-blue/10 flex items-center justify-center">
             <HugeiconsIcon icon={FolderLibraryIcon} size={32} color="#3B82F6" strokeWidth={1.5} />
           </div>
           <div>
-            <div className="text-18 font-bold text-text" style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}>
+            <div
+              className="text-18 font-bold text-text"
+              style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
+            >
               No workspaces yet
             </div>
             <div className="text-13 text-subtext mt-1 max-w-[340px]">
@@ -423,7 +530,7 @@ function WorkspacesView({
           >
             Your workspaces
           </h1>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
             {wsList.map((ws) => (
               <div key={ws.id} className="relative">
                 {switching === ws.id && (
