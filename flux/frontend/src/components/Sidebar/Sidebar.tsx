@@ -25,7 +25,7 @@ export function Sidebar({ onGoHome }: { onGoHome: () => void }) {
         className="h-[48px] px-4 flex items-center gap-2 border-b border-border hover:bg-cardHover transition-colors text-left group"
         title="All workspaces"
       >
-        <img src={fluxLogo} alt="Flux" className="h-[22px] w-auto object-contain shrink-0" />
+        <img src={fluxLogo} alt="Flux" className="h-[28px] w-auto object-contain shrink-0" />
         <span className="flex-1 text-12 font-semibold text-text truncate min-w-0">
           {activeWs?.name ?? "Workspace"}
         </span>

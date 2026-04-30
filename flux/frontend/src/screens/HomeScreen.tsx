@@ -193,7 +193,7 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
               <span>Back</span>
             </button>
           )}
-          <img src={fluxLogo} alt="Flux" className="h-[24px] w-auto object-contain" />
+          <img src={fluxLogo} alt="Flux" className="h-[32px] w-auto object-contain" />
         </div>
         <div className="flex items-center gap-2">
           <button
