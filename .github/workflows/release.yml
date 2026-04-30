@@ -31,18 +31,23 @@ jobs:
         working-directory: flux/frontend
         run: npm install --include=dev
 
-      - name: Build (Windows/amd64 + NSIS installer)
+      - name: Build (Windows/amd64)
         working-directory: flux
-        run: wails build -platform windows/amd64 -nsis -o flux
+        run: wails build -platform windows/amd64 -o flux
 
-      - name: Rename artifacts
+      - name: List build output
+        shell: bash
+        run: ls -lh flux/build/bin/
+
+      - name: Copy artifact
         shell: bash
         run: |
           mkdir -p release-artifacts
-          for f in flux/build/bin/*.exe; do
-            name=$(basename "$f" .exe)
-            cp "$f" "release-artifacts/${name}-windows-amd64.exe"
-          done
+          if [ -f "flux/build/bin/flux.exe" ]; then
+            cp "flux/build/bin/flux.exe" "release-artifacts/flux-windows-amd64.exe"
+          else
+            cp "flux/build/bin/flux" "release-artifacts/flux-windows-amd64.exe"
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
@@ -104,7 +109,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
 
       - name: Install Wails CLI
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
@@ -117,7 +122,7 @@ jobs:
         working-directory: flux
         run: wails build -platform linux/amd64 -o flux
 
-      - name: Rename artifact
+      - name: Copy artifact
         run: |
           mkdir -p release-artifacts
           cp flux/build/bin/flux release-artifacts/flux-linux-amd64
