@@ -18,7 +18,7 @@ import {
   PlusSignIcon,
   Download02Icon,
 } from "@hugeicons/core-free-icons";
-import fluxLogo from "../assets/images/fluxloo.jpeg";
+import reqitLogo from "../assets/images/reqit-logo.svg";
 
 const GITHUB_URL = "https://github.com/HalxDocs/flux";
 const RELEASES_URL = "https://github.com/HalxDocs/flux/releases/latest";
@@ -144,7 +144,7 @@ export function WebApp() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-bg/90 backdrop-blur border-b border-border">
         <div className="max-w-[860px] mx-auto px-4 sm:px-6 h-[56px] flex items-center justify-between">
-          <img src={fluxLogo} alt="Flux" className="h-[28px] sm:h-[32px] w-auto object-contain" />
+          <img src={reqitLogo} alt="reqit" className="h-[28px] sm:h-[32px] w-auto object-contain" />
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -269,7 +269,7 @@ export function WebApp() {
         {/* Sync callout */}
         <section className="bg-card border border-border rounded-2xl p-5 flex items-start gap-4">
           <div className="w-[40px] h-[40px] rounded-xl bg-teal/10 flex items-center justify-center shrink-0">
-            <HugeiconsIcon icon={Layers01Icon} size={20} color="#00D4AA" strokeWidth={1.5} />
+            <HugeiconsIcon icon={Layers01Icon} size={20} color="#06B6D4" strokeWidth={1.5} />
           </div>
           <div>
             <div className="text-13 font-semibold text-text mb-1">
@@ -277,7 +277,7 @@ export function WebApp() {
             </div>
             <div className="text-12 text-subtext leading-relaxed">
               Each workspace is just a folder. Drop it into Dropbox, OneDrive, or Google Drive
-              and it syncs automatically. On your second device, open Flux → "Open folder" →
+              and it syncs automatically. On your second device, open reqit → "Open folder" →
               pick the synced folder. Done. No login, no subscription, no data sent anywhere.
             </div>
           </div>
@@ -312,7 +312,7 @@ export function WebApp() {
             className="text-22 font-bold text-text"
             style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}
           >
-            Ready to try Flux?
+            Ready to try reqit?
           </h2>
           <p className="text-13 text-subtext max-w-[380px] leading-relaxed">
             Free, open source, and always will be. No account needed — just download and run.

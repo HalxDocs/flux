@@ -5,20 +5,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#0D0D0D",
-        surface: "#141414",
-        card: "#1A1A1A",
-        cardHover: "#222222",
-        border: "#2A2A2A",
+        bg: "#0F1117",
+        surface: "#161B22",
+        card: "#161B22",
+        cardHover: "#1E2430",
+        border: "#21262D",
         blue: {
-          DEFAULT: "#3B82F6",
-          hover: "#60A5FA",
+          DEFAULT: "#7C3AED",
+          hover: "#8B5CF6",
         },
-        teal: "#00D4AA",
-        danger: "#FF6B6B",
-        warn: "#FFB347",
-        text: "#F0F0F0",
-        subtext: "#888888",
+        accent: "#06B6D4",
+        teal: "#06B6D4",
+        danger: "#EF4444",
+        warn: "#F59E0B",
+        success: "#10B981",
+        text: "#F0F6FC",
+        subtext: "#6B7280",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -53,7 +55,7 @@ const config: Config = {
         lg: '12px',
       },
       ringColor: {
-        DEFAULT: '#3B82F6',
+        DEFAULT: '#7C3AED',
       },
     },
   },

@@ -106,10 +106,10 @@ function WorkspaceApp({ onGoHome }: { onGoHome: () => void }) {
         </div>
         <div>
           <div className="text-16 font-bold text-text" style={{ fontFamily: '"Space Grotesk", Inter, system-ui, sans-serif' }}>
-            Flux works best on desktop
+            reqit works best on desktop
           </div>
           <div className="text-13 text-subtext mt-2 max-w-[300px] leading-relaxed">
-            The full API client is designed for desktop. Open Flux on your computer for the complete experience.
+            The full API client is designed for desktop. Open reqit on your computer for the complete experience.
           </div>
         </div>
         <button

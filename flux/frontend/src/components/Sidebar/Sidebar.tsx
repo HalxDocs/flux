@@ -1,5 +1,5 @@
 import { ChevronDown, Download, Folder, History as HistoryIcon, Settings, Terminal, User } from "lucide-react";
-import fluxLogo from "../../assets/images/fluxloo.jpeg";
+import reqitLogo from "../../assets/images/reqit-logo.svg";
 import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
 import { CollectionsTree } from "./CollectionsTree";
 import { HistoryList } from "./HistoryList";
@@ -26,7 +26,7 @@ export function Sidebar({ onGoHome }: { onGoHome: () => void }) {
         className="h-[48px] px-4 flex items-center gap-2 border-b border-border hover:bg-cardHover transition-colors text-left group"
         title="All workspaces"
       >
-        <img src={fluxLogo} alt="Flux" className="h-[28px] w-auto object-contain shrink-0" />
+        <img src={reqitLogo} alt="reqit" className="h-[28px] w-auto object-contain shrink-0" />
         <span className="flex-1 text-12 font-semibold text-text truncate min-w-0">
           {activeWs?.name ?? "Workspace"}
         </span>
@@ -90,7 +90,7 @@ export function Sidebar({ onGoHome }: { onGoHome: () => void }) {
           <div className="text-11 text-subtext truncate">
             {profile && profile.requestCount > 0
               ? `${profile.requestCount} request${profile.requestCount === 1 ? "" : "s"} sent`
-              : "Welcome to Flux"}
+              : "Welcome to reqit"}
           </div>
         </div>
         <Settings size={12} className="text-subtext shrink-0" />

@@ -16,8 +16,8 @@
 
   body {
     margin: 0;
-    background-color: #0D0D0D;
-    color: #F0F0F0;
+    background-color: #0F1117;
+    color: #F0F6FC;
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 12px;
     line-height: 18px;
@@ -36,16 +36,16 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #2A2A2A;
+    background: #21262D;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #3A3A3A;
+    background: #30363D;
   }
 
   *:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px #3B82F6;
+    box-shadow: 0 0 0 2px #7C3AED;
   }
 }

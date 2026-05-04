@@ -82,12 +82,12 @@ export function SettingsModal() {
           <Stat label="Data directory" value={appDataDir || "—"} mono />
           <p className="text-11 text-subtext">
             Collections, environments, history, and your profile live here as
-            plain JSON. Back it up or commit it to git — Flux is local-first.
+            plain JSON. Back it up or commit it to git — reqit is local-first.
           </p>
         </Section>
 
         <Section title="About">
-          <Stat label="Version" value={`Flux ${VERSION}`} />
+          <Stat label="Version" value={`reqit ${VERSION}`} />
           <Stat label="Repository" value="github.com/HalxDocs/flux" mono />
         </Section>
 

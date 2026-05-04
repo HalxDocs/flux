@@ -25,7 +25,7 @@ import { useTabsStore } from "../stores/useTabsStore";
 import { CreateWorkspaceModal } from "../components/modals/CreateWorkspaceModal";
 import { PickFolder } from "../../wailsjs/go/main/App";
 import { toast } from "../stores/useToastStore";
-import fluxLogo from "../assets/images/fluxloo.jpeg";
+import reqitLogo from "../assets/images/reqit-logo.svg";
 import type { workspaces } from "../../wailsjs/go/models";
 
 const GITHUB_URL = "https://github.com/HalxDocs/flux";
@@ -236,7 +236,7 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
               <span className="hidden sm:inline">Back</span>
             </button>
           )}
-          <img src={fluxLogo} alt="Flux" className="h-[28px] sm:h-[32px] w-auto object-contain" />
+          <img src={reqitLogo} alt="reqit" className="h-[28px] sm:h-[32px] w-auto object-contain" />
         </div>
         <div className="flex items-center gap-2">
           {/* GitHub stars */}
@@ -358,7 +358,7 @@ function LandingView({
 
         {/* Mobile download hint */}
         <p className="sm:hidden text-11 text-subtext/60 mt-1">
-          Download Flux for the best experience on desktop
+          Download reqit for the best experience on desktop
         </p>
       </section>
 
@@ -417,7 +417,7 @@ function LandingView({
       {/* Sync callout */}
       <section className="bg-card border border-border rounded-2xl p-5 flex items-start gap-4">
         <div className="w-[40px] h-[40px] rounded-xl bg-teal/10 flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={Layers01Icon} size={20} color="#00D4AA" strokeWidth={1.5} />
+          <HugeiconsIcon icon={Layers01Icon} size={20} color="#06B6D4" strokeWidth={1.5} />
         </div>
         <div>
           <div className="text-13 font-semibold text-text mb-1">
@@ -425,7 +425,7 @@ function LandingView({
           </div>
           <div className="text-12 text-subtext leading-relaxed">
             Each workspace is just a folder. Drop it into Dropbox, OneDrive, or Google Drive and it
-            syncs automatically. On your second device, open Flux → "Open folder" → pick the synced
+            syncs automatically. On your second device, open reqit → "Open folder" → pick the synced
             folder. Done. No login, no subscription, no data sent anywhere.
           </div>
         </div>
