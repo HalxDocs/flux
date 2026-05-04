@@ -28,7 +28,7 @@ import { toast } from "../stores/useToastStore";
 import reqitLogo from "../assets/images/reqitloo.jpeg";
 import type { workspaces } from "../../wailsjs/go/models";
 
-const GITHUB_URL = "https://github.com/HalxDocs/flux";
+const GITHUB_URL = "https://github.com/HalxDocs/reqit";
 const PORTFOLIO_URL = "https://halxdocs.com";
 
 function openExternal(url: string) {
@@ -192,7 +192,7 @@ export function HomeScreen({ onEnter }: { onEnter: () => Promise<void> }) {
   const switchWs = useWorkspaceStore((s) => s.switch);
   const openFromFolder = useWorkspaceStore((s) => s.openFromFolder);
   const resetTabs = useTabsStore((s) => s.resetTabs);
-  const stars = useGitHubStars("HalxDocs/flux");
+  const stars = useGitHubStars("HalxDocs/reqit");
 
   const [view, setView] = useState<View>("landing");
   const [createOpen, setCreateOpen] = useState(false);

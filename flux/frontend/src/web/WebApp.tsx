@@ -20,15 +20,15 @@ import {
 } from "@hugeicons/core-free-icons";
 import reqitLogo from "../assets/images/reqitloo.jpeg";
 
-const GITHUB_URL = "https://github.com/HalxDocs/flux";
-const RELEASES_URL = "https://github.com/HalxDocs/flux/releases/latest";
+const GITHUB_URL = "https://github.com/HalxDocs/reqit";
+const RELEASES_URL = "https://github.com/HalxDocs/reqit/releases/latest";
 const PORTFOLIO_URL = "https://halxdocs.com";
 
-const DL_BASE = "https://github.com/HalxDocs/flux/releases/latest/download";
+const DL_BASE = "https://github.com/HalxDocs/reqit/releases/latest/download";
 const DOWNLOAD_URLS: Record<string, string> = {
-  windows: `${DL_BASE}/flux-windows-amd64.exe`,
-  mac: `${DL_BASE}/flux-macos-universal.zip`,
-  linux: `${DL_BASE}/flux-linux-amd64`,
+  windows: `${DL_BASE}/reqit-windows-amd64.exe`,
+  mac: `${DL_BASE}/reqit-macos-universal.zip`,
+  linux: `${DL_BASE}/reqit-linux-amd64`,
 };
 
 function getOS(): "windows" | "mac" | "linux" | "other" {
@@ -137,7 +137,7 @@ function Kbd({ children }: { children: string }) {
 }
 
 export function WebApp() {
-  const stars = useGitHubStars("HalxDocs/flux");
+  const stars = useGitHubStars("HalxDocs/reqit");
 
   return (
     <div className="min-h-screen bg-bg text-text">

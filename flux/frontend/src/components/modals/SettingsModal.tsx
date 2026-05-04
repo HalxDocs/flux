@@ -88,7 +88,7 @@ export function SettingsModal() {
 
         <Section title="About">
           <Stat label="Version" value={`reqit ${VERSION}`} />
-          <Stat label="Repository" value="github.com/HalxDocs/flux" mono />
+          <Stat label="Repository" value="github.com/HalxDocs/reqit" mono />
         </Section>
 
         <div className="flex justify-end pt-2">

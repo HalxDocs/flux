@@ -29,7 +29,7 @@
 | macOS    | `reqit-macos-universal.zip` |
 | Linux    | `reqit-linux-amd64` |
 
-Download the latest release from [GitHub Releases](https://github.com/HalxDocs/flux/releases/latest).
+Download the latest release from [GitHub Releases](https://github.com/HalxDocs/reqit/releases/latest).
 
 ### macOS — First Launch
 
@@ -343,4 +343,4 @@ Go to **Home** (click the logo at the top of the sidebar) and create or open a w
 
 ---
 
-*reqit is built with [Wails](https://wails.io) (Go + React). Source: [github.com/HalxDocs/flux](https://github.com/HalxDocs/flux)*
+*reqit is built with [Wails](https://wails.io) (Go + React). Source: [github.com/HalxDocs/reqit](https://github.com/HalxDocs/reqit)*

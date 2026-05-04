@@ -33,20 +33,16 @@ jobs:
 
       - name: Build (Windows/amd64)
         working-directory: flux
-        run: wails build -platform windows/amd64 -o flux
-
-      - name: List build output
-        shell: bash
-        run: ls -lh flux/build/bin/
+        run: wails build -platform windows/amd64 -o reqit
 
       - name: Copy artifact
         shell: bash
         run: |
           mkdir -p release-artifacts
-          if [ -f "flux/build/bin/flux.exe" ]; then
-            cp "flux/build/bin/flux.exe" "release-artifacts/flux-windows-amd64.exe"
+          if [ -f "flux/build/bin/reqit.exe" ]; then
+            cp "flux/build/bin/reqit.exe" "release-artifacts/reqit-windows-amd64.exe"
           else
-            cp "flux/build/bin/flux" "release-artifacts/flux-windows-amd64.exe"
+            cp "flux/build/bin/reqit" "release-artifacts/reqit-windows-amd64.exe"
           fi
 
       - uses: actions/upload-artifact@v4
@@ -78,13 +74,13 @@ jobs:
 
       - name: Build (macOS universal)
         working-directory: flux
-        run: wails build -platform darwin/universal -o flux
+        run: wails build -platform darwin/universal -o reqit
 
       - name: Package as zip
         run: |
           mkdir -p release-artifacts
           cd flux/build/bin
-          zip -r "../../../release-artifacts/flux-macos-universal.zip" flux.app
+          zip -r "../../../release-artifacts/reqit-macos-universal.zip" reqit.app
 
       - uses: actions/upload-artifact@v4
         with:
@@ -120,12 +116,12 @@ jobs:
 
       - name: Build (Linux/amd64)
         working-directory: flux
-        run: wails build -platform linux/amd64 -o flux
+        run: wails build -platform linux/amd64 -o reqit
 
       - name: Copy artifact
         run: |
           mkdir -p release-artifacts
-          cp flux/build/bin/flux release-artifacts/flux-linux-amd64
+          cp flux/build/bin/reqit release-artifacts/reqit-linux-amd64
 
       - uses: actions/upload-artifact@v4
         with:

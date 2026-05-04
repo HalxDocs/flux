@@ -1,10 +1,10 @@
-# Flux
+# reqit
 
 A fast, local-first API client built for developers who want speed without the bloat. No Electron. No cloud account. No telemetry. Your collections live as plain JSON files you own.
 
-[![Release](https://img.shields.io/github/v/release/HalxDocs/flux?style=flat-square)](https://github.com/HalxDocs/flux/releases/latest)
-[![Stars](https://img.shields.io/github/stars/HalxDocs/flux?style=flat-square)](https://github.com/HalxDocs/flux/stargazers)
-[![License](https://img.shields.io/github/license/HalxDocs/flux?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/HalxDocs/reqit?style=flat-square)](https://github.com/HalxDocs/reqit/releases/latest)
+[![Stars](https://img.shields.io/github/stars/HalxDocs/reqit?style=flat-square)](https://github.com/HalxDocs/reqit/stargazers)
+[![License](https://img.shields.io/github/license/HalxDocs/reqit?style=flat-square)](LICENSE)
 
 ---
 
@@ -12,11 +12,11 @@ A fast, local-first API client built for developers who want speed without the b
 
 | Platform | Link |
 |----------|------|
-| Windows  | [flux-windows-amd64.exe](https://github.com/HalxDocs/flux/releases/latest/download/flux-windows-amd64.exe) |
-| macOS    | [flux-macos-universal.zip](https://github.com/HalxDocs/flux/releases/latest/download/flux-macos-universal.zip) |
-| Linux    | [flux-linux-amd64](https://github.com/HalxDocs/flux/releases/latest/download/flux-linux-amd64) |
+| Windows  | [reqit-windows-amd64.exe](https://github.com/HalxDocs/reqit/releases/latest/download/reqit-windows-amd64.exe) |
+| macOS    | [reqit-macos-universal.zip](https://github.com/HalxDocs/reqit/releases/latest/download/reqit-macos-universal.zip) |
+| Linux    | [reqit-linux-amd64](https://github.com/HalxDocs/reqit/releases/latest/download/reqit-linux-amd64) |
 
-Or visit the [releases page](https://github.com/HalxDocs/flux/releases).
+Or visit the [releases page](https://github.com/HalxDocs/reqit/releases).
 
 ---
 
@@ -32,6 +32,7 @@ Or visit the [releases page](https://github.com/HalxDocs/flux/releases).
 - **Postman import** — drop in a v2.1 collection instantly
 - **cURL import** — paste any curl command and it opens as a request tab
 - **History** — every request is automatically logged
+- **Team collaboration** — Git-based sync; see active teammates, commit & push, invite via shared remote URL
 - **Cross-device sync** — drop a workspace folder into Dropbox, Drive, or OneDrive; no account needed
 - **Keyboard shortcuts** — built for keyboard-first use
 
@@ -41,23 +42,25 @@ Everything is local. No data leaves your machine.
 
 | Platform | Path |
 |----------|------|
-| Windows  | `%APPDATA%\flux\` |
-| macOS    | `~/Library/Application Support/flux/` |
-| Linux    | `~/.config/flux/` |
+| Windows  | `%APPDATA%\reqit\` |
+| macOS    | `~/Library/Application Support/reqit/` |
+| Linux    | `~/.config/reqit/` |
 
 ---
 
-## macOS — "flux Not Opened" warning
+## macOS — Gatekeeper Warning
 
-macOS blocks apps that aren't notarized by Apple. Flux is safe — this warning appears because the app isn't yet signed with an Apple Developer certificate.
+macOS blocks apps that aren't notarized. reqit is safe — this warning appears because the app isn't signed with an Apple Developer certificate yet.
 
 **To open it anyway:**
 
-1. Go to **System Settings → Privacy & Security**
-2. Scroll down until you see _"flux was blocked from use because it is not from an identified developer"_
-3. Click **Open Anyway**
+1. Right-click `reqit.app` → **Open** → **Open** in the dialog
+2. Or: **System Settings → Privacy & Security → Open Anyway**
 
-Or: right-click `flux.app` → **Open** → **Open** in the dialog that appears.
+Or via Terminal:
+```bash
+xattr -cr /path/to/reqit.app
+```
 
 ---
 
@@ -73,6 +76,7 @@ Or: right-click `flux.app` → **Open** → **Open** in the dialog that appears.
 | Icons | [HugeIcons](https://hugeicons.com) |
 | JSON editor | [CodeMirror 6](https://codemirror.net) |
 | State management | [Zustand](https://zustand-demo.pmnd.rs) |
+| Git sync | [go-git](https://github.com/go-git/go-git) |
 | Fonts | [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) + [Inter](https://rsms.me/inter/) |
 
 ---
@@ -86,27 +90,31 @@ Or: right-click `flux.app` → **Open** → **Open** in the dialog that appears.
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
 # Clone and run in dev mode
-git clone https://github.com/HalxDocs/flux.git
-cd flux/flux
+git clone https://github.com/HalxDocs/reqit.git
+cd reqit/flux
 wails dev
 ```
 
 **Production build:**
 
 ```bash
-cd flux/flux
+cd reqit/flux
 wails build
-# Binary output: flux/build/bin/
 ```
 
 **Web landing page only:**
 
 ```bash
-cd flux/frontend
+cd reqit/flux/frontend
 npm install --include=dev
 npm run build:web
-# Output: dist-web/
 ```
+
+---
+
+## Documentation
+
+See [DOCS.md](DOCS.md) for the full user guide including team collaboration setup.
 
 ---
 
